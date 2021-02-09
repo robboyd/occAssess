@@ -60,8 +60,8 @@ assessRepeatVisits <- function(dat, periods, spatRes) {
 
     out <- do.call("rbind", out)
 
-    p <- ggplot2::ggplot(data=out, ggplot2::aes(x = vals, fill = Period)) +
-             ggplot2::geom_histogram(colour = "black") +
+    p <- ggplot2::ggplot(data=out, ggplot2::aes(x = vals, colour = Period)) +
+             ggplot2::geom_freqpoly() +
       ggplot2::xlab("Visits / years") +
       ggplot2::theme_linedraw() +
       xlim(c(0, 20)) +
