@@ -12,10 +12,19 @@
 
 
 assessEnvBias <- function(dat,
-                          envDat,
-                          periods) {
+                          envCols,
+                          periods,
+                          ...) {
 
-  dat <- dat[-which(is.na(dat$year)), ]
+  if (any(is.na(dat$year))) {
+    
+    warning("Removing data without a specified year")
+    
+    dat <- dat[-which(is.na(dat$year)), ]
+    
+  }
+  
+  if (any(is.na(dat[, envCols[1]]))) dat <- dat[-which(is.na(dat[, envCols[1]])), ]
   
   dat$Period <- NA
   
@@ -25,52 +34,22 @@ assessEnvBias <- function(dat,
     
   }
 
-  pca <- rasterPCA(envDat,
-                   nComp = 2,
-                   spca = T)
+  pca <- prcomp(dat[, envCols])
 
-  comps <- pca$map
-
-  x <- getValues(comps[[2]])
-
-  x <- x[-which(is.na(x))]
-
-  y <- getValues(comps[[1]])
-
-  y <- y[-which(is.na(y))]
-
-  ## extract PC1 and PC2 scores for the occurrence data
-
-  for (i in unique(dat$Period)) {
-    
-    assign(paste0(i), dat[dat$Period == i, c("lon", "lat", "identifier")])
-    
-    assign(paste0(i),data.frame(PC1=  as.numeric(extract(comps[[1]],
-                                              get(paste0(i))[, c(1, 2)])),
-                     PC2 = as.numeric(extract(comps[[2]],
-                                              get(paste0(i))[, c(1, 2)])),
-                     Period = as.factor(paste(i)),
-                     id = get(paste0(i))[, 3])
-    )
-    
-  }
-
-  data <- lapply(unique(dat$Period),
-                 function(x) { get(paste0(x)) })
-
-
-  data <- do.call("rbind", data)
+  p <- autoplot(pca, data = dat, colour = "Period",
+                ...) +
+    facet_wrap(~identifier) + 
+    theme_linedraw()
   
-  p <- ggplot(data = data, aes(x=PC2, y=PC1, colour = Period)) +
-              geom_point() +
-              theme_linedraw() +
-              labs(colour = "Period") +
-              facet_wrap(~id)
-
-
-  return(p)
+  return(list(pca = pca,
+              plot = p))
 
 }
 
-
-
+assessEnvBias(dat = dat,
+              envCols = 18:35,
+              periods = periods,
+              ellipse = TRUE,
+              scale = TRUE,
+              loadings = TRUE,
+              loadings.label = TRUE)
