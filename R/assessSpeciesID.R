@@ -81,5 +81,3 @@ assessSpeciesID <- function(dat, periods, filter = FALSE) {
 
 }
 
-
-
