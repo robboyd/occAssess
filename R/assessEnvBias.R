@@ -46,10 +46,3 @@ assessEnvBias <- function(dat,
 
 }
 
-assessEnvBias(dat = dat,
-              envCols = 18:35,
-              periods = periods,
-              ellipse = TRUE,
-              scale = TRUE,
-              loadings = TRUE,
-              loadings.label = TRUE)

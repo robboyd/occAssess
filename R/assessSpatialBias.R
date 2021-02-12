@@ -1,16 +1,25 @@
 #' \code{assessSpatialBias}
 #'
-#' This function calculates the proportion of records identified to species level in each year with data.
+#' This function calculates how far the data deviates from a random distribution in geographic space. It calculates
+#' a nearest neighbour index, defined as the mean of the nearest neighbour distances of the emprical data divided by
+#' the mean of the neares neighbour distances of a random sample. The user can choose how many random samples to average
+#' over, which should be larger where there are fewer data. This is because the random samples are generated in equal number to
+#' the data. Where the number of samples is > 1, the estimates come with a measures of uncertainty (5th and 95th percentiles). 
+#' The index is calculated for each of n user-specified time periods.
 #' @param dat string. A data.frame containing columns for species name (NA if not identified), an identifier (usually taxonomic group name),
 #'            and spatial uncertainty.
 #' @param periods Numeric. A list of time periods. For example, for two periods, the first spanning 1950 to 1990, and the second 1991 to 2019: periods = list(1950:1990, 1991:2019).
 #' @param nSamps Logical. How many iterations of random samples to use for comparison of empirical NN index with random NN index.
+#' @param mask String. A raster object used to indicate the study region over which the random distribution should be generated. 
+#'        Must be NA where points are not to be generated, and numeric where they may be generated. For example, this could be a map of worldclim climate data, cropped to the study region.
+#' @param degrade Logical. Whether or not to remove duplicated coordinates from the data. Coordinates are not considered to be duplicated if they are from
+#'        different \code{periods}.
 #' @return A list with two elements if filter = FALSE and three elements if filter = TRUE. The elements are 1) data (summary of spatial uncertainty),
 #'         2) a ggplot object and 3) the input data with the user-defined spatialUncertainty filter applied.
 #' @export
 #' @examples
 
-assessSpatialBias <- function(dat, periods, nSamps = 100) {
+assessSpatialBias <- function(dat, periods, mask, nSamps = 50, degrade = TRUE) {
   
   dat$Period <- NA
   
@@ -19,7 +28,14 @@ assessSpatialBias <- function(dat, periods, nSamps = 100) {
     dat$Period <- ifelse(dat$year %in% periods[[i]], paste0("p", i), dat$Period)
     
   }
-  
+
+
+if (degrade == TRUE & any(duplicated(dat[, c("lon", "lat", "identifier", "Period")]))) {
+
+  dat <- dat[!duplicated(dat[, c("lon", "lat", "identifier", "Period")]), ]
+
+}
+
   if (any(is.na(dat$year))) dat <- dat[-which(is.na(dat$year)), ]
   
   for (i in unique(dat$identifier)) {
@@ -36,7 +52,7 @@ assessSpatialBias <- function(dat, periods, nSamps = 100) {
                       randomSamp <- lapply(1:nSamps, 
                                            function(x) {
                                              
-                                             ran <- sampleRandom(rast, 
+                                             ran <- sampleRandom(mask, 
                                                                  size = nrow(pDat),
                                                                  xy = T)
                                              
@@ -77,16 +93,20 @@ assessSpatialBias <- function(dat, periods, nSamps = 100) {
   
   data <- do.call("rbind", data)
   
-  p <- ggplot(data = data, aes(x = Period, y = mean, group = identifier, ymin = lower, ymax = upper, fill = identifier)) +
+  p <- ggplot(data = data, aes(x = reorder(Period, desc(Period)), y = mean, group = identifier, ymin = lower, ymax = upper, fill = identifier)) +
     geom_line() +
     geom_point() +
     geom_ribbon(alpha = 0.5) +
     theme_linedraw() + 
     ylab("Nearest neighbour index") +
-    labs(colour = "")
-  
+    labs(fill = "") +
+    xlab("")
+
   return(list(data = data, 
               plot = p))
   
   
 }
+
+
+
