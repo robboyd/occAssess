@@ -12,7 +12,7 @@
 #' @examples
 
 
-assessSpeciesID <- function(dat, periods, filter = FALSE) {
+assessSpeciesID <- function(dat, periods, type) {
 
   dat$Period <- NA
 
@@ -41,11 +41,23 @@ assessSpeciesID <- function(dat, periods, filter = FALSE) {
                                                    function(x) {
                                                      p <- dat$Period[dat$year == x][1]
 
-                                                     data.frame(prop = 1 - (length(dat$species[is.na(dat$species) & dat$year == x]) /
-                                                                                      length(dat$species[dat$year == x])),
-                                                                                    year = x,
-                                                                                    group = i,
-                                                                                    Period = p)})
+                                                     if (type == "proportion") {
+                                                       
+                                                       data.frame(prop = 1 - (length(dat$species[is.na(dat$species) & dat$year == x]) /
+                                                                                length(dat$species[dat$year == x])),
+                                                                  year = x,
+                                                                  group = i,
+                                                                  Period = p)
+                                                       
+                                                     } else {
+                                                       
+                                                       data.frame(prop = length(dat$species[!is.na(dat$species) & dat$year == x]),
+                                                                  year = x,
+                                                                  group = i,
+                                                                  Period = p)
+                                                       
+                                                     }
+                                                     })
                 )
 
                 assign(paste0("props_", i), do.call("rbind", get(paste0("props_", i))))
@@ -55,29 +67,20 @@ assessSpeciesID <- function(dat, periods, filter = FALSE) {
 
   data <- do.call("rbind", data)
 
+  data <- data[order(data$year), ]
+  
+  ylab <- ifelse(type == "proportion", "Proportion identified to species level", "Number of records identified to species level")
+  
   p <- ggplot(data = data, aes(y = prop, x = year, fill = Period)) +
     geom_bar(stat = "identity") +
     theme_linedraw() +
     facet_wrap(~group) +
-    ylab("Proportion identified to species level")
+    ylab(ylab)
 
 
-  if (filter == TRUE) {
+  return(list(data = data,
+                plot = p))
 
-    dat <- dat[-which(is.na(dat$species)), ]
-
-    out <- list(data = data,
-                plot = p,
-                filterDat = dat)
-
-  } else {
-
-    out <- list(data = data,
-                plot = p)
-
-  }
-
-  return(out)
 
 }
 
