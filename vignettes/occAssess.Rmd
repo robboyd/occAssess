@@ -1,0 +1,49 @@
+---
+title: "occAssess"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{occAssess}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+```{r setup}
+library(occAssess)
+```
+
+# Introduction
+
+## What does occAssess do? 
+
+occAssess enables quick and easy screening of species occurrence data for common forms of bias and uncertainty. 
+
+## How does it work? 
+
+The package comprises a number of discrete functions, each of which is designed to assess a common form of bias or uncertainty, or indicate poor coverage. Generally speaking, users must simply pass their occurrence data to the functions, and specify time periods into which the resulting metrics will be split. Ouputs are provided in list format, with one element containing a ggplot2 object, and a second containing the data that underpins that plot.
+
+## A worked example 
+
+### Input data
+
+In this section we demonstrate the of use occAssess by applying it to data on pollinator occurrences from GBIF. The data covers three taxonomic groups: leaf-nosed bats (Phyllostomidae), bees (Apoidea) and hoverflies (Syrphidae). For speed we have taken a random subset of the data, which can be accessed from within occAssess:
+
+```{r eval = TRUE}
+data(dummy)
+
+str(dummy)
+```
+
+Your data needn't contain all of the fields in this example, but the less you provide, the fewer functions it will work with. The fields species (species name), x (x coordinate of the record), y ( y coordinate of the record), year and identifier (used to split data into groups) are mandatory and needed for all functions. As I introduce each function in the following, I will indicate which fields are required. Where you do not have information for a field, it should be set to NA. 
+
+### Functions
+
+#### assessSpeciesID
+
+The first function I will introduce is assessSpeciesID(). This function 

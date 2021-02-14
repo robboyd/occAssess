@@ -4,7 +4,7 @@
 \alias{assessSpeciesID}
 \title{\code{assessSpeciesID}}
 \usage{
-assessSpeciesID(dat, periods, filter = FALSE)
+assessSpeciesID(dat, periods, type)
 }
 \arguments{
 \item{dat}{string. A data.frame containing columns for species name (NA if not identified), an identifier (usually taxonomic group name),

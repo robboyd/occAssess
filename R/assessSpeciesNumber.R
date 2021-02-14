@@ -1,3 +1,12 @@
+#' \code{assessSpeciesNumber}
+#'
+#' This function calculates the number of species recorded in each year.
+#' @param dat string. A data.frame containing columns for species name (NA if not identified), an identifier (usually taxonomic group name),
+#'            and year (NA if not known).
+#' @param periods String. A list of time periods. For example, for two periods, the first spanning 1950 to 1990, and the second 1991 to 2019: periods = list(1950:1990, 1991:2019).
+#' @seealso \code{\link{assessSpeciesID}} which gives the number of species identified to species level. 
+#' @export
+#' @examples
 
 assessSpeciesNumber <- function(dat, periods) {
   
@@ -26,9 +35,10 @@ assessSpeciesNumber <- function(dat, periods) {
                    
                    assign(paste0("props_", i), lapply(unique(dat$year),
                                                       function(x) {
+                                                        
                                                         p <- dat$Period[dat$year == x][1]
 
-                                                        data.frame(val = length(unique(dat$species[dat$year == x & !is.na(dat$species)]),
+                                                        data.frame(val = length(unique(dat$species[dat$year == x & !is.na(dat$species)])),
                                                                    year = x,
                                                                    group = i,
                                                                    Period = p)
@@ -43,14 +53,13 @@ assessSpeciesNumber <- function(dat, periods) {
   data <- do.call("rbind", data)
   
   data <- data[order(data$year), ]
-  
-  ylab <- ifelse(type == "proportion", "Proportion identified to species level", "Number of records identified to species level")
+
   
   p <- ggplot(data = data, aes(y = val, x = year, fill = Period)) +
     geom_bar(stat = "identity") +
     theme_linedraw() +
     facet_wrap(~group) +
-    ylab(ylab)
+    ylab("Number of species recorded")
   
   
   return(list(data = data,
