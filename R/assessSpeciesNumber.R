@@ -25,7 +25,7 @@ assessSpeciesNumber <- function(dat, periods) {
     dat <- dat[-which(is.na(dat$year)), ]
     
   }
-  
+
   groups <- unique(dat$identifier)
   
   data <- lapply(groups,

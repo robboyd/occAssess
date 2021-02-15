@@ -4,7 +4,7 @@
 #' @param dat string. A data.frame containing columns for species name (NA if not identified), an identifier (usually taxonomic group name),
 #'            and year (NA if not known).
 #' @param periods String. A list of time periods. For example, for two periods, the first spanning 1950 to 1990, and the second 1991 to 2019: periods = list(1950:1990, 1991:2019).
-#' @seealso \code{\link{assessSpeciesID}} which gives the number of species identified to species level. 
+#' @seealso \code{\link{assessSpeciesID}} which gives the number of species identified to species level in each year. 
 #' @export
 #' @examples
 
