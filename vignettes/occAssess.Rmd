@@ -16,6 +16,7 @@ knitr::opts_chunk$set(
 
 ```{r setup}
 library(occAssess)
+library(ggplot2)
 ```
 
 # Introduction
@@ -30,20 +31,98 @@ The package comprises a number of discrete functions, each of which is designed 
 
 ## A worked example 
 
-### Input data
+In this document I demonstrate the utility of occAssess by applying it to data on pollinator occurrences in South America over the period 1950 to 2019. The data were extracted from GBIF using the rgbif function occ_data. I come at the data from the perspective of a modeller interested in estimating how the species' distributions have changed over time. 
 
-In this section we demonstrate the of use occAssess by applying it to data on pollinator occurrences from GBIF. The data covers three taxonomic groups: leaf-nosed bats (Phyllostomidae), bees (Apoidea) and hoverflies (Syrphidae). For speed we have taken a random subset of the data, which can be accessed from within occAssess:
+### Inputs
+
+#### Occurrence data
+
+occAssess requires a data.frame with the following fields: species (species name), x (x coordinae of record), y (y coordinate), year, spatialUncertainty (how much uncertainty is associated with the x and y coordinates; units do not matter but must be consistent) and identifier. The identifier is used to split the data into groups; for example, it could represent taxonomic groups or specific datasets. Where you have no information for a field, its value should be set to NA. 
 
 ```{r eval = TRUE}
-data(dummy)
 
-str(dummy)
+spDat <- read.csv("C:/Users/Rob.Lenovo-PC/Documents/surpass/Data/GBIF/20.01.21/allDat.csv")
+
+str(spDat)
+
 ```
 
-Your data needn't contain all of the fields in this example, but the less you provide, the fewer functions it will work with. The fields species (species name), x (x coordinate of the record), y ( y coordinate of the record), year and identifier (used to split data into groups) are mandatory and needed for all functions. As I introduce each function in the following, I will indicate which fields are required. Where you do not have information for a field, it should be set to NA. 
+#### Periods
+
+In addition to your occurrence data, you must also provide a number of periods into which your data will be split (thi can be one period covering e.g. your whole study extent). In this example I will split the data into (roughly) decades over the period 1950 to 2019. Periods are defined as follows:
+
+```{r eval = TRUE}
+
+periods <- list(1950:1960, 1961:1970, 1971:1980, 1981:1990, 1991:2000, 2001:2010, 2011:2019)
+
+```
 
 ### Functions
 
-#### assessSpeciesID
+All of the functions in occAssess require two common arguments: dat and periods (outlined above). I will run through each function in the following, indicating where additional arguments are required. Generally, the functions in occAssess return a list with two elements: one being a ggplot2 object, with a separate panel for level of identifier; and a second with the data underpinning the plot.
 
-The first function I will introduce is assessSpeciesID(). This function 
+#### assessRecordNumber
+
+The first function I will introduce is the simplest: assessRecordNumber. This function simply plots out the number of records per year in your dataset. 
+
+```{r eval = TRUE}
+
+nRec <- assessRecordNumber(dat = spDat,
+                           periods = periods)
+
+str(nRec$data)
+
+nRec$plot
+
+```
+
+This function enables researchers to quickly establish how the number of records has changed over time. 
+
+#### assessSpeciesNumber 
+
+In addition to the number of records, you may wish to know how the number of species (taxonomic coverage) in your dataset changes over time. For this you can use the function assessSpeciesNumber:
+
+```{r eval = TRUE}
+
+nSpec <- assessSpeciesNumber(dat = spDat,
+                           periods = periods)
+
+str(nSpec$data)
+
+nSpec$plot
+
+```
+
+#### assessSpeciesID 
+
+It has been speculated that apparent changes in taxonomic coverage could, in fact, reflect a change in taxonomic expertise over time. For example, if fewer individuals have the skill to identify certain species, then it may not appear in your dataset in the later periods. The function assessSpeciesID treats the proportion of species identified to species level as a proxy for taxonomic expertise: 
+
+```{r eval = TRUE}
+
+propID <- assessSpeciesID(dat = spDat,
+                           periods = periods,
+                           type = "proportion")
+
+str(propID$data)
+
+propID$plot
+
+```
+
+The argument "type" can take the values proportion (proportion of records identified to species level) or count (number of records identified to species level). 
+
+#### assessSpatialCov 
+
+The function assessSpatialCov grids your data at a specified spatial resolution then maps it in geographic space:
+
+```{r eval = TRUE}
+
+assessSpatialCov(dat = spDat,
+                 res = 0.5,
+                 logCount = TRUE,
+                 countries = c("Brazil", "Argentina", "Chile", "Colombia", "Ecuador", "Bolivia", "Uruguay", 
+                 "Venezuela", "Guayana", "Paraguay", "Peru", "Suriname"))
+
+```
+
+As you can see there are three new arguments to be specified. res is the spatial resolution at which you would like to map the data; logCount indicates whether or not you would like to log10 transform the counts for visual purposes; and countries defines the countries covered by your data. Countries must be specified in order to plot their boundaries.
