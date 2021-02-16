@@ -39,10 +39,10 @@ assessEnvBias <- function(dat,
 
   pca <- prcomp(dat[, envCols])
 
-  p <- autoplot(pca, data = dat, colour = "Period",
+  p <- ggplot2::autoplot(pca, data = dat, colour = "Period",
                 ...) +
-    facet_wrap(~identifier) + 
-    theme_linedraw()
+    ggplot2::facet_wrap(~identifier) + 
+    ggplot2::theme_linedraw()
   
   return(list(pca = pca,
               plot = p))

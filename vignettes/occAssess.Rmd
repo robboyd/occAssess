@@ -20,11 +20,12 @@ library(ggplot2)
 library(raster)
 library(rasterVis)
 library(spatstat)
+library(ggfortify)
 ```
 
 # Introduction
 
-## What does occAssess do? 
+# What does occAssess do? 
 
 occAssess enables quick and easy screening of species occurrence data for common forms of bias and uncertainty. 
 
@@ -62,7 +63,7 @@ periods <- list(1950:1960, 1961:1970, 1971:1980, 1981:1990, 1991:2000, 2001:2010
 
 ### Functions
 
-All of the functions in occAssess require two common arguments: dat and periods (outlined above). I will run through each function in the following, indicating where additional arguments are required. Generally, the functions in occAssess return a list with two elements: one being a ggplot2 object, with a separate panel for level of identifier; and a second with the data underpinning the plot.
+All of the functions in occAssess require two common arguments: dat and periods (outlined above). I will run through each function in the following, indicating where additional arguments are required. Generally, the functions in occAssess return a list with two elements: one being a ggplot2 object, with a separate panel for each level of identifier; and a second with the data underpinning the plot.
 
 #### assessRecordNumber
 
@@ -129,11 +130,22 @@ assessSpatialCov(dat = spDat,
 
 ```
 
-As you can see there are three new arguments to be specified. res is the spatial resolution at which you would like to map the data; logCount indicates whether or not you would like to log10 transform the counts for visual purposes; and countries defines the countries covered by your data. Countries must be specified in order to plot their boundaries.
+As you can see there are three new arguments to be specified. res is the spatial resolution at which you would like to map the data (units depend on you coordinate reference system, e.g. m if easting and northing, and decimal degress in lon/ lat); logCount indicates whether or not you would like to log10 transform the counts for visual purposes; and countries defines the countries covered by your data. Countries must be specified in order to plot their boundaries.
+
+#### assessSpatialUncertainty 
+
+Point occurrence data often comes with assocatiated spatial uncertainty (i.e. how uncertain the coordinates are in x and y dimensions). For example, GBIF data comes with a field called coorinateUncertaintyInMeters. The function assessSptialUncertainty can be used to visualize spatial uncertainty in your dataset:
+
+```{r eval = TRUE, fig.width = 7}
+
+assessSpatialUncertainty(dat = spDat,
+                         periods = periods)
+
+```
 
 #### assessSpatialBias
 
-Even if your data has good spatial coverage, it may be biased; that is to say, it may deviate from a random distribution in space. The function assessSpatialBias provides an index of how far your data deviates from a random distribution. To do this is simulates an equal number of points to your data randomly across your study region. Then, for each time period, it calculates the average nearest neighbour distance across your data points and divides it by the average nearest neighbour distance from the random sample. To delineate your study area, you must provide a mask layer. The mask is a raster object which is has numeric values within your study area, and is NA outside of your study area. Here, I'll use some climate data from South America as a mask layer:
+Even if your data has good spatial coverage, it may be biased; that is to say, it may deviate from a random distribution in space. The function assessSpatialBias provides an index of how far your data deviates from a random distribution. To do this is simulates an equal number of points to your data randomly across your study region. Then, for each time period, it calculates the average nearest neighbour distance across your data points and divides it by the average nearest neighbour distance from the random sample. If the index is lower than one then your data is more clustered than the random sample, and if it is above one it is more dispersed. To delineate your study area, you must provide a mask layer. The mask is a raster object which is has numeric values within your study area, and is NA outside of your study area. Here, I'll use some climate data from South America as a mask layer:
 
 ```{r eval = TRUE, fig.width = 7}
 
@@ -145,10 +157,47 @@ mask
 
 ```{r eval = TRUE, fig.width = 7}
 
-assessSpatialBias(dat = spDat,
-                  periods = periods,
-                  mask = mask,
-                  nSamps = 10,
-                  degrade = TRUE)
+spatBias <- assessSpatialBias(dat = spDat,
+                              periods = periods,
+                              mask = mask,
+                              nSamps = 10,
+                              degrade = TRUE)
+
+str(spatBias$data)
+
+spatBias$plot
 
 ```
+
+The argument nSamps indicates how many random distributions should be drawn, and the argument degrade = TRUE indicates that any duplicated coordinates within a time period and for a given level of identifier are removed. The shaded regions on the plot indicate the 5th and 95th percentiles of the nearest neighbour index calculated over nSamps random samples. 
+
+#### assessEnvBias 
+
+Spatial bias in your dataset does not necessarily tell you anything about environmental bias. The function assessEnvBias assess the degree to which your data are biased across time periods in environmental space. To do this we first need to get some climate data. I will use the standard suite of 19 bioclimatic variables from worldclim. It is possible to get this data through R using the raster package, but here I will use my local version for speed:
+
+```{r eval = TRUE, fig.width = 7}
+## How to get the data using raster::getData()
+
+#clim <- raster::getData("worldclim",var="bio",res=10)
+
+clim <- stack(list.files("C:/Users/Rob.Lenovo-PC/Documents/surpass/Data/bio/bio/",
+                           full.names = T))
+
+spDat <- cbind(spDat, raster::extract(clim, spDat[, c("lon", "lat")]))
+
+```
+assessEnvBias conducts a principal component analysis on your environmental data, then maps your occurrence data in environmental space:
+
+```{r eval = TRUE, fig.width = 7}
+
+envBias <- assessEnvBias(dat = spDat,
+                         periods = periods,
+                         nEnvVar = 19,
+                         frame = TRUE,
+                         frame.type = "norm")
+
+str(envBias$pca)
+envBias$plot
+
+```
+It is also possible to modify the appearance of envBias$plot using additional arguments that can be passed to ggbiplot::ggbiplot or ggfortify::autoplot.pca. For example, you can include elipses, use different principal components, include vaiable vectors, etc. 

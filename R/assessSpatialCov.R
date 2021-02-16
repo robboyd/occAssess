@@ -60,13 +60,13 @@ assessSpatialCov <- function (dat, periods, res, logCount = FALSE, countries) {
   
   myCol <- rgb(255,255,255, max = 255, alpha = 125, names = "blue50")
 
-  gplot(rasts) + geom_tile(aes(fill = value)) +
-    geom_polygon(data = map, ggplot2::aes(x=long, y = lat, group = group),
+  rasterVis::gplot(rasts) + ggplot2::geom_tile(ggplot2::aes(fill = value)) +
+    ggplot2::geom_polygon(data = map, ggplot2::aes(x=long, y = lat, group = group),
                  colour="black",fill=myCol,
                  inherit.aes=F) +
-    facet_wrap(~ variable) + 
-    theme_linedraw() +
-    scale_fill_gradient2(low = "red", high = "blue", na.value = myCol,
+    ggplot2::facet_wrap(~ variable) + 
+    ggplot2::theme_linedraw() +
+    ggplot2::scale_fill_gradient2(low = "red", high = "blue", na.value = myCol,
                                   name = leg) 
 
   

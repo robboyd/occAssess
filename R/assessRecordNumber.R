@@ -55,11 +55,11 @@ assessRecordNumber <- function(dat, periods) {
   data <- data[order(data$year), ]
   
   
-  p <- ggplot(data = data, aes(y = val, x = year, fill = Period)) +
-    geom_bar(stat = "identity") +
-    theme_linedraw() +
-    facet_wrap(~group) +
-    ylab("Number of records")
+  p <- ggplot2::ggplot(data = data, ggplot2::aes(y = val, x = year, fill = Period)) +
+    ggplot2::geom_bar(stat = "identity") +
+    ggplot2::theme_linedraw() +
+    ggplot2::facet_wrap(~group) +
+    ggplot2::ylab("Number of records")
   
   
   return(list(data = data,

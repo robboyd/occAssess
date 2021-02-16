@@ -47,18 +47,18 @@ if (degrade == TRUE & any(duplicated(dat[, c("lon", "lat", "identifier", "Period
                       
                       pDat <- dat[dat$Period == y & dat$identifier == i, ]
                       
-                      empDist <- nndist(X = pDat$lon, Y = pDat$lat, k = 1)
+                      empDist <- spatstat::nndist(X = pDat$lon, Y = pDat$lat, k = 1)
                       
                       empMean <- mean(empDist)
                       
                       randomSamp <- lapply(1:nSamps, 
                                            function(x) {
                                              
-                                             ran <- sampleRandom(mask, 
+                                             ran <- raster::sampleRandom(mask, 
                                                                  size = nrow(pDat),
                                                                  xy = T)
                                              
-                                             dist <- nndist(X = ran[,1], Y = ran[,2], k = 1) 
+                                             dist <- spatstat::nndist(X = ran[,1], Y = ran[,2], k = 1) 
                                              
                                              NN <- mean(dist)
                                              
@@ -95,14 +95,14 @@ if (degrade == TRUE & any(duplicated(dat[, c("lon", "lat", "identifier", "Period
   
   data <- do.call("rbind", data)
   
-  p <- ggplot(data = data, aes(x = Period, y = mean, group = identifier, ymin = lower, ymax = upper, fill = identifier)) +
-    geom_line() +
-    geom_point() +
-    geom_ribbon(alpha = 0.5) +
-    theme_linedraw() + 
-    ylab("Nearest neighbour index") +
-    labs(fill = "") +
-    xlab("")
+  p <- ggplot2::ggplot(data = data, ggplot2::aes(x = Period, y = mean, group = identifier, ymin = lower, ymax = upper, fill = identifier)) +
+    ggplot2::geom_line() +
+    ggplot2::geom_point() +
+    ggplot2::geom_ribbon(alpha = 0.5) +
+    ggplot2::theme_linedraw() + 
+    ggplot2::ylab("Nearest neighbour index") +
+    ggplot2::labs(fill = "") +
+    ggplot2::xlab("")
 
   return(list(data = data, 
               plot = p))

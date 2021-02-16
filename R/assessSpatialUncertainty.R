@@ -48,13 +48,13 @@ assessSpatialUncertainty <- function(dat, periods) {
                      Period = "p1")
 
 
-p <- ggplot(data = dat, aes(x = spatialUncertainty, fill = Period)) +
-  geom_histogram() +
-  theme_linedraw() +
-  facet_wrap(~identifier) +
-  xlab("Spatial uncertainty (m)") +
-  xlim(0, 15000) +
-  geom_text(
+p <- ggplot2::ggplot(data = dat, ggplot2::aes(x = spatialUncertainty, fill = Period)) +
+  ggplot2::geom_histogram() +
+  ggplot2::theme_linedraw() +
+  ggplot2::facet_wrap(~identifier) +
+  ggplot2::xlab("Spatial uncertainty (m)") +
+  ggplot2::xlim(0, 15000) +
+  ggplot2::geom_text(
     data = text,
     mapping = aes(x = -Inf, y = -Inf, label = paste("Prop. unspecified = ", prop), fill = Period),
     hjust   = -0.1,
@@ -65,6 +65,5 @@ p <- ggplot(data = dat, aes(x = spatialUncertainty, fill = Period)) +
                 plot = p))
 
 }
-
 
 

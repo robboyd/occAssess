@@ -71,11 +71,11 @@ assessSpeciesID <- function(dat, periods, type) {
   
   ylab <- ifelse(type == "proportion", "Proportion identified to species level", "Number of records identified to species level")
   
-  p <- ggplot(data = data, aes(y = prop, x = year, fill = Period)) +
-    geom_bar(stat = "identity") +
-    theme_linedraw() +
-    facet_wrap(~group) +
-    ylab(ylab)
+  p <- ggplot2::ggplot(data = data, ggplot2::aes(y = prop, x = year, fill = Period)) +
+    ggplot2::geom_bar(stat = "identity") +
+    ggplot2::theme_linedraw() +
+    ggplot2::facet_wrap(~group) +
+    ggplot2::ylab(ylab)
 
 
   return(list(data = data,
