@@ -38,7 +38,7 @@ assessSpatialCov <- function (dat, periods, res, logCount = FALSE, countries) {
 
   rasts <- lapply(X=unique(dat$identifier), 
                   function(x) { data <- dat[dat$identifier == x, c("lon", "lat")]
-                                rasterize(data, rast)})
+                                raster::rasterize(data, rast)})
   
   rasts <- stack(rasts)
   
