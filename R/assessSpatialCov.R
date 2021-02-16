@@ -40,7 +40,7 @@ assessSpatialCov <- function (dat, periods, res, logCount = FALSE, countries) {
                   function(x) { data <- dat[dat$identifier == x, c("lon", "lat")]
                                 raster::rasterize(data, rast)})
   
-  rasts <- stack(rasts)
+  rasts <- raster::stack(rasts)
   
   if (logCount == TRUE) {
     
@@ -71,5 +71,4 @@ assessSpatialCov <- function (dat, periods, res, logCount = FALSE, countries) {
 
   
 }
-
 
