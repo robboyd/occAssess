@@ -12,10 +12,12 @@
 
 
 assessEnvBias <- function(dat,
-                          envCols,
+                          nEnvVar,
                           periods,
                           ...) {
 
+  envCols <- (ncol(dat) - nEnvVar):ncol(dat)
+  
   if (any(is.na(dat$year))) {
     
     warning("Removing data without a specified year")
