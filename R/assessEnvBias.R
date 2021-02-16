@@ -4,7 +4,8 @@
 #' @param dat string. A data.frame containing columns for species name (NA if not identified), an identifier (usually taxonomic group name),
 #'            and spatial uncertainty.
 #' @param periods String. A list of time periods. For example, for two periods, the first spanning 1950 to 1990, and the second 1991 to 2019: periods = list(1950:1990, 1991:2019).
-#' @param envDat String. A raster::stack object with n layers, one for each environmental variable to be considered. 
+#' @param nEnvVar Numeric. Number of environmental variables included in dat. 
+#' @param ... Additional arguments passed to ggfortify::autoplot.pca or to ggbiplot::ggbiplot.
 #' @return A list with two elements if filter = FALSE and three elements if filter = TRUE. The elements are 1) data (summary of spatial uncertainty),
 #'         2) a ggplot object and 3) the input data with the user-defined spatialUncertainty filter applied.
 #' @export
@@ -16,8 +17,8 @@ assessEnvBias <- function(dat,
                           periods,
                           ...) {
 
-  envCols <- (ncol(dat) - nEnvVar):ncol(dat)
-  
+  envCols <- ((ncol(dat) - nEnvVar) + 1):ncol(dat)
+
   if (any(is.na(dat$year))) {
     
     warning("Removing data without a specified year")
@@ -25,9 +26,9 @@ assessEnvBias <- function(dat,
     dat <- dat[-which(is.na(dat$year)), ]
     
   }
-  
+
   if (any(is.na(dat[, envCols[1]]))) dat <- dat[-which(is.na(dat[, envCols[1]])), ]
-  
+
   dat$Period <- NA
   
   for (i in 1: length(periods)) {
@@ -47,4 +48,3 @@ assessEnvBias <- function(dat,
               plot = p))
 
 }
-
