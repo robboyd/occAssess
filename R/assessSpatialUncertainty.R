@@ -56,7 +56,7 @@ p <- ggplot2::ggplot(data = dat, ggplot2::aes(x = spatialUncertainty, fill = Per
   ggplot2::xlim(0, 15000) +
   ggplot2::geom_text(
     data = text,
-    mapping = aes(x = -Inf, y = -Inf, label = paste("Prop. unspecified = ", prop), fill = Period),
+    mapping = ggplot2::aes(x = -Inf, y = -Inf, label = paste("Prop. unspecified = ", prop), fill = Period),
     hjust   = -0.1,
     vjust   = -0.7
   )
