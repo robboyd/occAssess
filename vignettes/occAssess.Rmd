@@ -17,6 +17,9 @@ knitr::opts_chunk$set(
 ```{r setup}
 library(occAssess)
 library(ggplot2)
+library(raster)
+library(rasterVis)
+library(spatstat)
 ```
 
 # Introduction
@@ -65,7 +68,7 @@ All of the functions in occAssess require two common arguments: dat and periods 
 
 The first function I will introduce is the simplest: assessRecordNumber. This function simply plots out the number of records per year in your dataset. 
 
-```{r eval = TRUE}
+```{r eval = TRUE, fig.width = 7}
 
 nRec <- assessRecordNumber(dat = spDat,
                            periods = periods)
@@ -82,7 +85,7 @@ This function enables researchers to quickly establish how the number of records
 
 In addition to the number of records, you may wish to know how the number of species (taxonomic coverage) in your dataset changes over time. For this you can use the function assessSpeciesNumber:
 
-```{r eval = TRUE}
+```{r eval = TRUE, fig.width = 7}
 
 nSpec <- assessSpeciesNumber(dat = spDat,
                            periods = periods)
@@ -97,7 +100,7 @@ nSpec$plot
 
 It has been speculated that apparent changes in taxonomic coverage could, in fact, reflect a change in taxonomic expertise over time. For example, if fewer individuals have the skill to identify certain species, then it may not appear in your dataset in the later periods. The function assessSpeciesID treats the proportion of species identified to species level as a proxy for taxonomic expertise: 
 
-```{r eval = TRUE}
+```{r eval = TRUE, fig.width = 7}
 
 propID <- assessSpeciesID(dat = spDat,
                            periods = periods,
@@ -115,9 +118,10 @@ The argument "type" can take the values proportion (proportion of records identi
 
 The function assessSpatialCov grids your data at a specified spatial resolution then maps it in geographic space:
 
-```{r eval = TRUE}
+```{r eval = TRUE, fig.width = 7}
 
 assessSpatialCov(dat = spDat,
+                 periods = periods,
                  res = 0.5,
                  logCount = TRUE,
                  countries = c("Brazil", "Argentina", "Chile", "Colombia", "Ecuador", "Bolivia", "Uruguay", 
@@ -126,3 +130,25 @@ assessSpatialCov(dat = spDat,
 ```
 
 As you can see there are three new arguments to be specified. res is the spatial resolution at which you would like to map the data; logCount indicates whether or not you would like to log10 transform the counts for visual purposes; and countries defines the countries covered by your data. Countries must be specified in order to plot their boundaries.
+
+#### assessSpatialBias
+
+Even if your data has good spatial coverage, it may be biased; that is to say, it may deviate from a random distribution in space. The function assessSpatialBias provides an index of how far your data deviates from a random distribution. To do this is simulates an equal number of points to your data randomly across your study region. Then, for each time period, it calculates the average nearest neighbour distance across your data points and divides it by the average nearest neighbour distance from the random sample. To delineate your study area, you must provide a mask layer. The mask is a raster object which is has numeric values within your study area, and is NA outside of your study area. Here, I'll use some climate data from South America as a mask layer:
+
+```{r eval = TRUE, fig.width = 7}
+
+mask <- raster("C:/Users/Rob.Lenovo-PC/Documents/surpass/Data/occAssessData/climSA.asc")
+
+mask
+
+```
+
+```{r eval = TRUE, fig.width = 7}
+
+assessSpatialBias(dat = spDat,
+                  periods = periods,
+                  mask = mask,
+                  nSamps = 10,
+                  degrade = TRUE)
+
+```
