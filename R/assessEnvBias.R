@@ -49,6 +49,3 @@ assessEnvBias <- function(dat,
 
 }
 
-assessEnvBias(dat = spDat, 
-              nEnvVar = 19,
-              periods = periods)
