@@ -38,7 +38,7 @@ assessEnvBias <- function(dat,
   }
 
   pca <- prcomp(dat[, envCols])
-
+  library(ggfortify)
   p <- ggplot2::autoplot(pca, data = dat, colour = "Period",
                 ...) +
     ggplot2::facet_wrap(~identifier) + 
@@ -48,3 +48,7 @@ assessEnvBias <- function(dat,
               plot = p))
 
 }
+
+assessEnvBias(dat = spDat, 
+              nEnvVar = 19,
+              periods = periods)
