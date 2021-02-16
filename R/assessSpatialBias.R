@@ -36,6 +36,8 @@ if (degrade == TRUE & any(duplicated(dat[, c("lon", "lat", "identifier", "Period
 
 }
 
+  dat <- dat[order(dat$year), ]
+  
   if (any(is.na(dat$year))) dat <- dat[-which(is.na(dat$year)), ]
   
   for (i in unique(dat$identifier)) {
@@ -93,7 +95,7 @@ if (degrade == TRUE & any(duplicated(dat[, c("lon", "lat", "identifier", "Period
   
   data <- do.call("rbind", data)
   
-  p <- ggplot(data = data, aes(x = reorder(Period, desc(Period)), y = mean, group = identifier, ymin = lower, ymax = upper, fill = identifier)) +
+  p <- ggplot(data = data, aes(x = Period, y = mean, group = identifier, ymin = lower, ymax = upper, fill = identifier)) +
     geom_line() +
     geom_point() +
     geom_ribbon(alpha = 0.5) +
