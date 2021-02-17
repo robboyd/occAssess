@@ -15,12 +15,8 @@ knitr::opts_chunk$set(
 ```
 
 ```{r setup}
+#install_github("https://github.com/robboyd/occAssess")
 library(occAssess)
-library(ggplot2)
-library(raster)
-library(rasterVis)
-library(spatstat)
-library(ggfortify)
 ```
 
 # Introduction
@@ -149,7 +145,7 @@ Even if your data has good spatial coverage, it may be biased; that is to say, i
 
 ```{r eval = TRUE, fig.width = 7}
 
-mask <- raster("C:/Users/Rob.Lenovo-PC/Documents/surpass/Data/occAssessData/climSA.asc")
+mask <- raster::raster("C:/Users/Rob.Lenovo-PC/Documents/surpass/Data/occAssessData/climSA.asc")
 
 mask
 
@@ -180,7 +176,7 @@ Spatial bias in your dataset does not necessarily tell you anything about enviro
 
 #clim <- raster::getData("worldclim",var="bio",res=10)
 
-clim <- stack(list.files("C:/Users/Rob.Lenovo-PC/Documents/surpass/Data/bio/bio/",
+clim <- raster::stack(list.files("C:/Users/Rob.Lenovo-PC/Documents/surpass/Data/bio/bio/",
                            full.names = T))
 
 spDat <- cbind(spDat, raster::extract(clim, spDat[, c("lon", "lat")]))

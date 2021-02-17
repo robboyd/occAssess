@@ -20,13 +20,13 @@ assessSpatialCov <- function (dat, periods, res, logCount = FALSE, countries) {
     
   }
 
-  xmin <- min(dat$lon, na.rm = T)
+  xmin <- min(dat$x, na.rm = T)
   
-  xmax <- max(dat$lon, na.rm = T)
+  xmax <- max(dat$x, na.rm = T)
   
-  ymin <- min(dat$lat, na.rm = T)
+  ymin <- min(dat$y, na.rm = T)
   
-  ymax <- max(dat$lat, na.rm = T)
+  ymax <- max(dat$y, na.rm = T)
   
   rast <- raster::raster(ncol=length(seq(xmin, xmax, res)),
                          nrow=length(seq(ymin, ymax, res)),
@@ -37,7 +37,7 @@ assessSpatialCov <- function (dat, periods, res, logCount = FALSE, countries) {
   
 
   rasts <- lapply(X=unique(dat$identifier), 
-                  function(x) { data <- dat[dat$identifier == x, c("lon", "lat")]
+                  function(x) { data <- dat[dat$identifier == x, c("x", "y")]
                                 raster::rasterize(data, rast)})
   
   rasts <- raster::stack(rasts)

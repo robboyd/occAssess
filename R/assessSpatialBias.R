@@ -30,9 +30,9 @@ assessSpatialBias <- function(dat, periods, mask, nSamps = 50, degrade = TRUE) {
   }
 
 
-if (degrade == TRUE & any(duplicated(dat[, c("lon", "lat", "identifier", "Period")]))) {
+if (degrade == TRUE & any(duplicated(dat[, c("x", "y", "identifier", "Period")]))) {
 
-  dat <- dat[!duplicated(dat[, c("lon", "lat", "identifier", "Period")]), ]
+  dat <- dat[!duplicated(dat[, c("x", "y", "identifier", "Period")]), ]
 
 }
 
@@ -47,7 +47,7 @@ if (degrade == TRUE & any(duplicated(dat[, c("lon", "lat", "identifier", "Period
                       
                       pDat <- dat[dat$Period == y & dat$identifier == i, ]
                       
-                      empDist <- spatstat::nndist(X = pDat$lon, Y = pDat$lat, k = 1)
+                      empDist <- spatstat::nndist(X = pDat$x, Y = pDat$y, k = 1)
                       
                       empMean <- mean(empDist)
                       
