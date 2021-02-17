@@ -6,11 +6,14 @@
 #' @param periods String. A list of time periods. For example, for two periods, the first spanning 1950 to 1990, and the second 1991 to 2019: periods = list(1950:1990, 1991:2019).
 #' @param res Numeric. Spatial resolution at which to grid the occurrence data.
 #' @param logCount Logical. Whether to log transform counts for visual purposes. Useful where there is large variation in counts across cells. 
+#' @param countries. String or vector. Country names to be passed to ggplot2::map_data. Needed to add borders to your plot. Countries should only be used if you are working on
+#'        the WGS84 coordinate reference system. Otherwise see shp. 
+#' @param shp String. If you are not working on WGS84, then you will need to provide a shapefile (spatialPolygons or spatialPolygonsDataFrame) with the country borders on the relevant crs for plotting. 
 #' @seealso \code{\link{assessSpeciesID}} which gives the number of species identified to species level. 
 #' @export
 #' @examples
 
-assessSpatialCov <- function (dat, periods, res, logCount = FALSE, countries) {
+assessSpatialCov <- function (dat, periods, res, logCount = FALSE, countries, shp = NULL) {
   
   dat$Period <- NA
   
@@ -55,8 +58,8 @@ assessSpatialCov <- function (dat, periods, res, logCount = FALSE, countries) {
   }
   
   names(rasts) <- unique(dat$identifier)
-  
-  map <- ggplot2::map_data("world", regions = countries)
+
+  map <- ifelse(is.null(shp), ggplot2::map_data("world", regions = countries), ggplot2::fortify(shp)) 
   
   myCol <- rgb(255,255,255, max = 255, alpha = 125, names = "blue50")
 
@@ -71,4 +74,5 @@ assessSpatialCov <- function (dat, periods, res, logCount = FALSE, countries) {
 
   
 }
+
 
