@@ -4,15 +4,17 @@
 \alias{assessEnvBias}
 \title{\code{assessEnvBias}}
 \usage{
-assessEnvBias(dat, envCols, periods, ...)
+assessEnvBias(dat, nEnvVar, periods, ...)
 }
 \arguments{
 \item{dat}{string. A data.frame containing columns for species name (NA if not identified), an identifier (usually taxonomic group name),
 and spatial uncertainty.}
 
+\item{nEnvVar}{Numeric. Number of environmental variables included in dat.}
+
 \item{periods}{String. A list of time periods. For example, for two periods, the first spanning 1950 to 1990, and the second 1991 to 2019: periods = list(1950:1990, 1991:2019).}
 
-\item{envDat}{String. A raster::stack object with n layers, one for each environmental variable to be considered.}
+\item{...}{Additional arguments passed to ggfortify::autoplot.pca or to ggbiplot::ggbiplot.}
 }
 \value{
 A list with two elements if filter = FALSE and three elements if filter = TRUE. The elements are 1) data (summary of spatial uncertainty),

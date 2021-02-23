@@ -4,7 +4,7 @@
 \alias{assessSpatialCov}
 \title{\code{assessSpatialCov}}
 \usage{
-assessSpatialCov(dat, periods, res, logCount = FALSE, countries)
+assessSpatialCov(dat, periods, res, logCount = FALSE, countries, shp = NULL)
 }
 \arguments{
 \item{dat}{string. A data.frame containing columns for species name (NA if not identified), an identifier (usually taxonomic group name),
@@ -15,6 +15,11 @@ and year (NA if not known).}
 \item{res}{Numeric. Spatial resolution at which to grid the occurrence data.}
 
 \item{logCount}{Logical. Whether to log transform counts for visual purposes. Useful where there is large variation in counts across cells.}
+
+\item{shp}{String. If you are not working on WGS84, then you will need to provide a shapefile (spatialPolygons or spatialPolygonsDataFrame) with the country borders on the relevant crs for plotting.}
+
+\item{countries.}{String or vector. Country names to be passed to ggplot2::map_data. Needed to add borders to your plot. Countries should only be used if you are working on
+the WGS84 coordinate reference system. Otherwise see shp.}
 }
 \description{
 This function grids occurrence data then maps it as counts per grid cell in geographic spece. .
