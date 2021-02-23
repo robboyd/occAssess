@@ -79,7 +79,3 @@ assessSpatialCov <- function (dat, periods, res, logCount = FALSE, countries, sh
 }
 
 
-assessSpatialCov(dat = spDat, 
-                 periods = periods,
-                 countries = countries,
-                 res = 0.5, logCount = T)
