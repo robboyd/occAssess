@@ -59,11 +59,14 @@ assessSpatialCov <- function (dat, periods, res, logCount = FALSE, countries, sh
   
   names(rasts) <- unique(dat$identifier)
 
-  map <- ifelse(is.null(shp), ggplot2::map_data("world", regions = countries), ggplot2::fortify(shp)) 
+  #map <- ifelse(is.null(shp), ggplot2::map_data("world", regions = countries), ggplot2::fortify(shp)) 
+
+  map <- ggplot2::map_data("world", regions = countries)
   
   myCol <- rgb(255,255,255, max = 255, alpha = 125, names = "blue50")
 
-  rasterVis::gplot(rasts) + ggplot2::geom_tile(ggplot2::aes(fill = value)) +
+  rasterVis::gplot(rasts) + 
+    ggplot2::geom_tile(ggplot2::aes(fill = value)) +
     ggplot2::geom_polygon(data = map, ggplot2::aes(x=long, y = lat, group = group),
                  colour="black",fill=myCol,
                  inherit.aes=F) +
@@ -76,3 +79,7 @@ assessSpatialCov <- function (dat, periods, res, logCount = FALSE, countries, sh
 }
 
 
+assessSpatialCov(dat = spDat, 
+                 periods = periods,
+                 countries = countries,
+                 res = 0.5, logCount = T)
