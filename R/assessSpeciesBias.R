@@ -106,6 +106,3 @@ assessSpeciesBias <- function(dat, periods, res) {
   
 }
 
-assessSpeciesBias(dat = spDat,
-                  periods = periods,
-                  res = 0.5)
