@@ -14,6 +14,12 @@
 
 assessSpeciesID <- function(dat, periods, type) {
 
+  dat <- dat[order(dat$year), ]
+  
+  drop <- which(!dat$year %in% unlist(periods))
+  
+  dat <- dat[-drop, ]
+  
   dat$Period <- NA
 
   for (i in 1: length(periods)) {

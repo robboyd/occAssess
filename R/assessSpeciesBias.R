@@ -1,4 +1,4 @@
-#' \code{assessSpeciesBias}
+#' \code{assessRarityBias}
 #'
 #' This function assesses the proportionality of species observed range sizes and number of records. For each period, the function regresses
 #' the number of grid cells with records (proxy for range size) on the number of records. It uses the r2 value from these regressions
@@ -12,9 +12,13 @@
 #' @examples
 #' 
 
-assessSpeciesBias <- function(dat, periods, res) {
-  
+assessRarityBias <- function(dat, periods, res) {
+
   dat <- dat[order(dat$year), ]
+  
+  drop <- which(!dat$year %in% unlist(periods))
+
+  dat <- dat[-drop, ]
   
   dat$Period <- NA
   

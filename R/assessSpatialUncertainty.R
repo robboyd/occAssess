@@ -20,6 +20,12 @@ assessSpatialUncertainty <- function(dat, periods) {
     
   }
   
+  dat <- dat[order(dat$year), ]
+  
+  drop <- which(!dat$year %in% unlist(periods))
+  
+  dat <- dat[-drop, ]
+  
   dat$Period <- NA
 
   for (i in 1: length(periods)) {
@@ -48,15 +54,15 @@ assessSpatialUncertainty <- function(dat, periods) {
                      Period = "p1")
 
 
-p <- ggplot2::ggplot(data = dat, ggplot2::aes(x = spatialUncertainty, fill = Period)) +
-  ggplot2::geom_histogram() +
+p <- ggplot2::ggplot(data = dat, ggplot2::aes(x = spatialUncertainty, colour = Period)) +
+  ggplot2::geom_freqpoly() +
   ggplot2::theme_linedraw() +
   ggplot2::facet_wrap(~identifier) +
   ggplot2::xlab("Spatial uncertainty (m)") +
   ggplot2::xlim(0, 15000) +
   ggplot2::geom_text(
     data = text,
-    mapping = ggplot2::aes(x = -Inf, y = -Inf, label = paste("Prop. unspecified = ", prop), fill = Period),
+    mapping = ggplot2::aes(x = -Inf, y = -Inf, label = paste("Prop. unspecified = ", prop), colour = Period),
     hjust   = -0.1,
     vjust   = -0.7
   )

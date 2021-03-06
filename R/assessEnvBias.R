@@ -29,6 +29,12 @@ assessEnvBias <- function(dat,
 
   if (any(is.na(dat[, envCols[1]]))) dat <- dat[-which(is.na(dat[, envCols[1]])), ]
 
+  dat <- dat[order(dat$year), ]
+  
+  drop <- which(!dat$year %in% unlist(periods))
+  
+  dat <- dat[-drop, ]
+  
   dat$Period <- NA
   
   for (i in 1: length(periods)) {

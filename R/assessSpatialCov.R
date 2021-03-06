@@ -13,15 +13,7 @@
 #' @export
 #' @examples
 
-assessSpatialCov <- function (dat, periods, res, logCount = FALSE, countries, shp = NULL) {
-  
-  dat$Period <- NA
-  
-  for (i in 1: length(periods)) {
-    
-    dat$Period <- ifelse(dat$year %in% periods[[i]], paste0("p", i), dat$Period)
-    
-  }
+assessSpatialCov <- function (dat, res, logCount = FALSE, countries, shp = NULL) {
 
   xmin <- min(dat$x, na.rm = T)
   
