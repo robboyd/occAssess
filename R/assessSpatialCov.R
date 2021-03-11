@@ -15,6 +15,8 @@
 
 assessSpatialCov <- function (dat, res, logCount = FALSE, countries, shp = NULL) {
 
+  if (any(is.na(dat$identifier))) stop("One or more NAs in the identifier field. NAs are not permitted.")
+  
   xmin <- min(dat$x, na.rm = T)
   
   xmax <- max(dat$x, na.rm = T)

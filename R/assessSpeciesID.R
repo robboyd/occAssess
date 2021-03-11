@@ -13,6 +13,8 @@
 
 assessSpeciesID <- function(dat, periods, type) {
 
+  if (any(is.na(dat$identifier))) stop("One or more NAs in the identifier field. NAs are not permitted.")
+  
   dat <- dat[order(dat$year), ]
   
   if (any(!dat$year %in% unlist(periods))) {

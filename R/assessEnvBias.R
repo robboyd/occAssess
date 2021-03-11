@@ -17,6 +17,8 @@ assessEnvBias <- function(dat,
                           periods,
                           ...) {
 
+  if (any(is.na(dat$identifier))) stop("One or more NAs in the identifier field. NAs are not permitted.")
+  
   envCols <- ((ncol(dat) - nEnvVar) + 1):ncol(dat)
 
   if (any(is.na(dat$year))) {

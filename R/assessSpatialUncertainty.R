@@ -12,6 +12,8 @@
 
 assessSpatialUncertainty <- function(dat, periods) {
 
+  if (any(is.na(dat$identifier))) stop("One or more NAs in the identifier field. NAs are not permitted.")
+  
   if (any(is.na(dat$year))) {
     
     warning(paste0("Removing", nrow(dat[is.na(dat$year), ]), "records because they are do not have a year associated."))
