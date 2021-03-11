@@ -43,15 +43,12 @@ assessSpeciesNumber <- function(dat, periods) {
                    
                    dat <- dat[dat$identifier == i, ]
                    
-                   assign(paste0("props_", i), lapply(unique(dat$year),
+                   assign(paste0("props_", i), lapply(unique(dat$Period),
                                                       function(x) {
-                                                        
-                                                        p <- dat$Period[dat$year == x][1]
 
-                                                        data.frame(val = length(unique(dat$species[dat$year == x & !is.na(dat$species)])),
-                                                                   year = x,
+                                                        data.frame(val = length(unique(dat$species[dat$Period == x & !is.na(dat$species)])),
                                                                    group = i,
-                                                                   Period = p)
+                                                                   Period = x)
                                                       })
                    )
                    
@@ -61,17 +58,17 @@ assessSpeciesNumber <- function(dat, periods) {
   )
   
   data <- do.call("rbind", data)
-  
-  data <- data[order(data$year), ]
+
+  #data <- data[order(data$Period), ]
 
   
-  p <- ggplot2::ggplot(data = data, ggplot2::aes(y = val, x = year, fill = Period)) +
-    ggplot2::geom_bar(stat = "identity") +
+  p <- ggplot2::ggplot(data = data, ggplot2::aes(y = val, x = Period, colour = group, group = group)) +
+    ggplot2::geom_point() +
+    ggplot2::geom_line() +
     ggplot2::theme_linedraw() +
-    ggplot2::facet_wrap(~group) +
-    ggplot2::ylab("Number of species recorded")
-  
-  
+    ggplot2::ylab("Number of species recorded") +
+    ggplot2::labs(colour = "")
+
   return(list(data = data,
               plot = p))
   

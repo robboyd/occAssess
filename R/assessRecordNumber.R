@@ -43,15 +43,12 @@ assessRecordNumber <- function(dat, periods) {
                    
                    dat <- dat[dat$identifier == i, ]
                    
-                   assign(paste0("props_", i), lapply(unique(dat$year),
+                   assign(paste0("props_", i), lapply(unique(dat$Period),
                                                       function(x) {
                                                         
-                                                        p <- dat$Period[dat$year == x][1]
-                                                        
-                                                        data.frame(val = length(dat$species[dat$year == x]),
-                                                                   year = x,
+                                                        data.frame(val = length(dat$species[dat$Period == x]),
                                                                    group = i,
-                                                                   Period = p)
+                                                                   Period = x)
                                                       })
                    )
                    
@@ -62,16 +59,16 @@ assessRecordNumber <- function(dat, periods) {
   
   data <- do.call("rbind", data)
   
-  data <- data[order(data$year), ]
+  #data <- data[order(data$year), ]
   
   
-  p <- ggplot2::ggplot(data = data, ggplot2::aes(y = val, x = year, fill = Period)) +
-    ggplot2::geom_bar(stat = "identity") +
+  p <- ggplot2::ggplot(data = data, ggplot2::aes(y = val, x = Period, colour = group, group = group)) +
+    ggplot2::geom_point() +
+    ggplot2::geom_line() +
     ggplot2::theme_linedraw() +
-    ggplot2::facet_wrap(~group) +
-    ggplot2::ylab("Number of records")
-  
-  
+    ggplot2::ylab("Number of records") +
+    ggplot2::labs(colour = "")
+
   return(list(data = data,
               plot = p))
   

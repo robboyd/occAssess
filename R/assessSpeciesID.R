@@ -11,7 +11,6 @@
 #' @export
 #' @examples
 
-
 assessSpeciesID <- function(dat, periods, type) {
 
   dat <- dat[order(dat$year), ]
@@ -47,24 +46,21 @@ assessSpeciesID <- function(dat, periods, type) {
 
                 dat <- dat[dat$identifier == i, ]
 
-                assign(paste0("props_", i), lapply(unique(dat$year),
+                assign(paste0("props_", i), lapply(unique(dat$Period),
                                                    function(x) {
-                                                     p <- dat$Period[dat$year == x][1]
 
                                                      if (type == "proportion") {
                                                        
-                                                       data.frame(prop = 1 - (length(dat$species[is.na(dat$species) & dat$year == x]) /
-                                                                                length(dat$species[dat$year == x])),
-                                                                  year = x,
+                                                       data.frame(prop = 1 - (length(dat$species[is.na(dat$species) & dat$Period == x]) /
+                                                                                length(dat$species[dat$Period == x])),
                                                                   group = i,
-                                                                  Period = p)
+                                                                  Period = x)
                                                        
                                                      } else {
                                                        
-                                                       data.frame(prop = length(dat$species[!is.na(dat$species) & dat$year == x]),
-                                                                  year = x,
+                                                       data.frame(prop = length(dat$species[!is.na(dat$species) & dat$Period == x]),
                                                                   group = i,
-                                                                  Period = p)
+                                                                  Period = x)
                                                        
                                                      }
                                                      })
@@ -77,16 +73,16 @@ assessSpeciesID <- function(dat, periods, type) {
 
   data <- do.call("rbind", data)
 
-  data <- data[order(data$year), ]
+  #data <- data[order(data$year), ]
   
   ylab <- ifelse(type == "proportion", "Proportion identified to species level", "Number of records identified to species level")
   
-  p <- ggplot2::ggplot(data = data, ggplot2::aes(y = prop, x = year, fill = Period)) +
-    ggplot2::geom_bar(stat = "identity") +
+  p <- ggplot2::ggplot(data = data, ggplot2::aes(y = prop, x = Period, colour = group, group = group)) +
+    ggplot2::geom_point() +
+    ggplot2::geom_line() +
     ggplot2::theme_linedraw() +
-    ggplot2::facet_wrap(~group) +
-    ggplot2::ylab(ylab)
-
+    ggplot2::ylab(ylab) +
+    ggplot2::labs(colour = "")
 
   return(list(data = data,
                 plot = p))
