@@ -34,13 +34,6 @@ assessRarityBias <- function(dat, periods, res) {
     
   }
   
-  nSpecies <- lapply(1:unique(dat$Period),
-                     function(x) { x <- length(unique(dat$species[dat$period == x]))})
-  
-  nSpecies <- do.call("c", nSpecies)
-  
-  if (any(nSpecies < 30)) warning("There are less than 30 species in some time periods which is a low sample size for the regression. View results with caution.")
-  
   if (any(is.na(dat$year))) {
     
     warning(paste("Removing", nrow(dat[is.na(dat$year), ]), "records because they are do not have a year associated."))
@@ -56,6 +49,14 @@ assessRarityBias <- function(dat, periods, res) {
     dat <- dat[-which(is.na(dat$species)), ]
     
   }
+  
+  nSpecies <- lapply(unique(dat$Period),
+                     function(x) { x <- length(unique(dat$species[dat$period == x]))})
+  
+  nSpecies <- do.call("c", nSpecies)
+  
+  if (any(nSpecies < 30)) warning("There are less than 30 species in some time periods which is a low sample size for the regression. View results with caution.")
+  
   
   xmin <- min(dat$x, na.rm = T)
   
