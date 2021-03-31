@@ -58,24 +58,26 @@ assessSpatialUncertainty <- function(dat, periods) {
   text <- data.frame(identifier = unique(dat$identifier),
                      prop = round(props, 2),
                      Period = "p1")
-?geom_freqpoly
 
-p <- ggplot2::ggplot(data = dat, ggplot2::aes(x = spatialUncertainty, colour = Period)) +
-  ggplot2::geom_density() +
+
+p <- ggplot2::ggplot(data = dat, ggplot2::aes(x = spatialUncertainty, group = Period, colour = Period)) +
+  ggplot2::geom_histogram() +
   ggplot2::theme_linedraw() +
   ggplot2::facet_wrap(~identifier) +
-  ggplot2::xlab("Spatial uncertainty (m)") +
+  ggplot2::xlab("Spatial uncertainty") +
   ggplot2::xlim(0, 15000) +
   ggplot2::geom_text(
     data = text,
     mapping = ggplot2::aes(x = -Inf, y = -Inf, label = paste("Prop. unspecified = ", prop)),
     hjust   = -0.1,
-    vjust   = -0.7
+    vjust   = -0.7,
+    colour = "black"
   )
 
   return(list(data = props,
                 plot = p))
 
 }
+
 
 
