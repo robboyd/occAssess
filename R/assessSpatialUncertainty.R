@@ -11,7 +11,9 @@
 
 
 assessSpatialUncertainty <- function(dat, periods) {
-
+    
+  if (any(!(c("species", "x", "y", "year", "spatialUncertainty", "identifier") %in% colnames(spDat)))) stop("Data must includes columns for species, x, y, year, spatialUncertainty and identifier")
+  
   if (any(is.na(dat$identifier))) stop("One or more NAs in the identifier field. NAs are not permitted.")
   
   if (any(is.na(dat$year))) {
@@ -78,6 +80,5 @@ p <- ggplot2::ggplot(data = dat, ggplot2::aes(x = spatialUncertainty, group = Pe
                 plot = p))
 
 }
-
 
 

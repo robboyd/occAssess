@@ -14,6 +14,8 @@
 
 assessRarityBias <- function(dat, periods, res) {
 
+  if (any(!(c("species", "x", "y", "year", "spatialUncertainty", "identifier") %in% colnames(dat)))) stop("Data must includes columns for species, x, y, year, spatialUncertainty and identifier")
+  
   if (any(is.na(dat$identifier))) stop("One or more NAs in the identifier field. NAs are not permitted.")
   
   dat <- dat[order(dat$year), ]

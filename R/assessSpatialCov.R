@@ -15,6 +15,8 @@
 
 assessSpatialCov <- function (dat, res, logCount = FALSE, countries, shp = NULL) {
 
+  if (any(!(c("species", "x", "y", "year", "spatialUncertainty", "identifier") %in% colnames(dat)))) stop("Data must includes columns for species, x, y, year, spatialUncertainty and identifier")
+  
   if (any(is.na(dat$identifier))) stop("One or more NAs in the identifier field. NAs are not permitted.")
   
   xmin <- min(dat$x, na.rm = T)
