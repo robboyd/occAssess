@@ -1,17 +1,20 @@
 library(occAssess)
 library(testthat)
 
-context("errors")
+context("errors and warnings")
 
 data(random)
 
-dat <- random[, -1]
-
 periods <- list(2000:2004, 2005:2010)
 
-test_that("check functions error with wrong column names", {
+test_that("check basic errors are caught", {
   
-  expect_error( assessSpatialUncertainty(dat = dat, periods = periods) )
+  expect_error( assessSpatialUncertainty(dat = random[, -1], periods = periods) )
+  
+  random$identifier[10] <- NA
+  
+  expect_error( assessSpatialUncertainty(dat = random, periods = periods))
   
 })
+
 
