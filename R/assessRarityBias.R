@@ -8,11 +8,12 @@
 #'            and year (NA if not known).
 #' @param periods String. A list of time periods. For example, for two periods, the first spanning 1950 to 1990, and the second 1991 to 2019: periods = list(1950:1990, 1991:2019).
 #' @param res Logical. Spatial resolution at which to grid the data for estimation of range size.
+#' @param prevPerPeriod Logical. If TRUE then prevalence (number of grid cells with data) is calculated per period and if FALSE then prevalence is calculated over all periods.
 #' @export
 #' @examples
 #' 
 
-assessRarityBias <- function(dat, periods, res) {
+assessRarityBias <- function(dat, periods, res, prevPerPeriod) {
 
   if (any(!(c("species", "x", "y", "year", "spatialUncertainty", "identifier") %in% colnames(dat)))) stop("Data must includes columns for species, x, y, year, spatialUncertainty and identifier")
   
@@ -84,10 +85,17 @@ assessRarityBias <- function(dat, periods, res) {
                   
                   stats <- lapply(spp, 
                                   function(x) {
-                                    r <- raster::rasterize(cbind(dat$x[dat$species == x & dat$identifier == i & dat$Period == y], dat$y[dat$species == x& dat$identifier == i & dat$Period == y]), rast)
+                                    if (prevPerPeriod == TRUE) {
+                                      r <- raster::rasterize(cbind(dat$x[dat$species == x & dat$identifier == i & dat$Period == y], dat$y[dat$species == x& dat$identifier == i & dat$Period == y]), rast)
+                                    } else {
+                                      r <- raster::rasterize(cbind(dat$x[dat$species == x & dat$identifier == i], dat$y[dat$species == x& dat$identifier == i]), rast)
+                                    }
+                                      
                                     cells <- raster::getValues(r)
                                     cells <- length(cells[!is.na(cells)])
-                                    recs <- nrow(dat[dat$species == x, ])
+                                    recs <- nrow(dat[dat$species == x & dat$Period == y & dat$identifier == i, ])
+                                    
+                                    
                                     
                                     data.frame(species = x,
                                                cells = cells,
