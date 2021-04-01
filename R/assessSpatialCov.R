@@ -60,22 +60,15 @@ assessSpatialCov <- function (dat, res, logCount = FALSE, countries, shp = NULL,
     
     names(rasts) <- unique(dat$Period)
     
-    assign(paste0("rasts", i), raster::stack(rasts))
+    rasts <- raster::stack(rasts)
+    
+    if (logCount == TRUE) rasts <- log10(rasts)
+    
+    assign(paste0("rasts", i), rasts)
     
   }
   
-  if (logCount == TRUE) {
-    
-    leg <- "log10(n records)"
-
-    lapply(1:length(unique(dat$identifier)),
-           function(x) {assign(paste0("rasts", unique(dat$identifier[x])), log10(get(paste0("rasts", unique(dat$identifier[x])))))})
-    
-  } else {
-    
-    leg <- "n records"
-    
-  }
+  leg <- ifelse(logCount == TRUE, "log10(n records)", "n records")
 
   #map <- ifelse(is.null(shp), ggplot2::map_data("world", regions = countries), ggplot2::fortify(shp)) 
 
@@ -103,6 +96,6 @@ assessSpatialCov <- function (dat, res, logCount = FALSE, countries, shp = NULL,
   names(out) <- unique(dat$identifier)
 
 return(out)
-  
+
 }
 
