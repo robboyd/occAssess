@@ -87,12 +87,12 @@ assessEnvBias <- function(dat,
     
   }
 
-  p <- ggplot2::ggplot(data = plotDat, aes(x = plotDat[, (2 + xPC)], y = plotDat[, (2+yPC)], colour = Period, group = Period)) + 
+  p <- ggplot2::ggplot(data = plotDat, ggplot2::aes(x = plotDat[, (2 + xPC)], y = plotDat[, (2+yPC)], colour = Period, group = Period)) + 
     ggplot2::stat_ellipse(type = "norm") +
-    facet_wrap(~identifier) +
-    labs(x = paste0("PC", xPC),
+    ggplot2::facet_wrap(~identifier) +
+    ggplot2::labs(x = paste0("PC", xPC),
          y = paste0("PC", yPC)) +
-    theme_linedraw()
+    ggplot2::theme_linedraw()
 
   return(p)
 
