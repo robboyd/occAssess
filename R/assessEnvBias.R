@@ -24,7 +24,7 @@ assessEnvBias <- function(dat,
   
   if (nrow(envDat) != nrow(dat)) stop("nrow of environmental data does not equal nrow of species occurrence data.")
 
-  if (xPC > ncol(envDat) | yPC | ncol(envDat)) stop("You have chosen a principal component that doesn't exist for one of the x or y axes")
+  if (xPC > ncol(envDat) | yPC > ncol(envDat)) stop("You have chosen a principal component that doesn't exist for one of the x or y axes")
   
   if (!is.null(backgrounEnvDat) & any(colnames(envDat) != colnames(backgroundEnvDat))) stop("Column names of envDat must match column names of backgrounEnvDat")
   
