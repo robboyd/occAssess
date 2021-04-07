@@ -22,7 +22,7 @@ assessEnvBias <- function(dat,
   
   if (any(is.na(dat$identifier))) stop("One or more NAs in the identifier field. NAs are not permitted.")
   
-  if (nrow(envDat != nrow(dat))) stop("nrow of environmental data does not equal nrow of species occurrence data.")
+  if (nrow(envDat) != nrow(dat)) stop("nrow of environmental data does not equal nrow of species occurrence data.")
 
   if (xPC > ncol(envDat) | yPC | ncol(envDat)) stop("You have chosen a principal component that doesn't exist for one of the x or y axes")
   
