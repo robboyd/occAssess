@@ -26,7 +26,7 @@ assessEnvBias <- function(dat,
 
   if (xPC > ncol(envDat) | yPC > ncol(envDat)) stop("You have chosen a principal component that doesn't exist for one of the x or y axes")
   
-  if (!is.null(backgrounEnvDat) & any(colnames(envDat) != colnames(backgroundEnvDat))) stop("Column names of envDat must match column names of backgrounEnvDat")
+  if (!is.null(backgroundEnvDat) & any(colnames(envDat) != colnames(backgroundEnvDat))) stop("Column names of envDat must match column names of backgrounEnvDat")
   
   dat <- cbind(dat, envDat)
   
