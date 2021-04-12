@@ -59,7 +59,7 @@ assessSpeciesID <- function(dat, periods, type, maxSpatUncertainty = NULL) {
 
                                                      if (type == "proportion") {
                                                        
-                                                       prop <- ifelse(length(dat$species[dat$Period == x] > 0), 1 - (length(dat$species[is.na(dat$species) & dat$Period == x]) /
+                                                       prop <- ifelse(length(as.numeric(dat$species[dat$Period == x]) > 0), 1 - (length(dat$species[is.na(dat$species) & dat$Period == x]) /
                                                                                                                        length(dat$species[dat$Period == x])), NA)
                                                        
                                                        data.frame(prop = prop,
@@ -68,7 +68,7 @@ assessSpeciesID <- function(dat, periods, type, maxSpatUncertainty = NULL) {
                                                        
                                                      } else {
                                                        
-                                                       prop <- ifelse(length(dat$species[dat$Period == x]) > 0, length(dat$species[!is.na(dat$species) & dat$Period == x]), 0)
+                                                       prop <- ifelse(length(as.numeric(dat$species[dat$Period == x]) > 0), length(dat$species[!is.na(dat$species) & dat$Period == x]), 0)
                                                        
                                                        data.frame(prop = prop,
                                                                   group = i,
