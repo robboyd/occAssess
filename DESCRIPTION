@@ -18,12 +18,11 @@ Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.1.1
 Imports:
     ggplot2,
-    ggfortify,
     raster,
-    rasterVis,
     spatstat
 Suggests: 
     knitr,
     rmarkdown,
-    testthat
+    testthat,
+    rasterVis
 VignetteBuilder: knitr
