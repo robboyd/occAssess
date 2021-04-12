@@ -1,18 +1,23 @@
 #' \code{assessSpeciesNumber}
 #'
 #' This function calculates the number of species recorded in each year.
-#' @param dat string. A data.frame containing columns for species name (NA if not identified), an identifier (usually taxonomic group name),
-#'            and year (NA if not known).
+#' @param dat string. A data.frame containing columns species (species name), x (x coordinate), y (y coordinate), year, spatialUncertainty and identifier. 
 #' @param periods String. A list of time periods. For example, for two periods, the first spanning 1950 to 1990, and the second 1991 to 2019: periods = list(1950:1990, 1991:2019).
-#' @seealso \code{\link{assessSpeciesID}} which gives the number of species identified to species level. 
+#' @param maxSpatUncertainty Numeric. Maximum permitted spatial uncertainty. All records more uncertain than this value will be dropped. Units must match the units in your data.
+#' @seealso \code{\link{assessSpeciesID}} which gives the number or proportion of records identified to species level. 
+#' @return A list with two elements: a ggplot2 object and the data underpinning the plot.
 #' @export
 #' @examples
 
-assessSpeciesNumber <- function(dat, periods) {
+assessSpeciesNumber <- function(dat, periods, maxSpatUncertainty = NULL) {
   
   if (any(!(c("species", "x", "y", "year", "spatialUncertainty", "identifier") %in% colnames(dat)))) stop("Data must includes columns for species, x, y, year, spatialUncertainty and identifier")
   
   if (any(is.na(dat$identifier))) stop("One or more NAs in the identifier field. NAs are not permitted.")
+  
+  if (!is.null(maxSpatUncertainty)) dat <- dat[!is.na(dat$spatialUncertainty) & dat$spatialUncertainty <= maxSpatUncertainty, ]
+
+  if (nrow(dat) == 0) stop("No records with with spatialUncertainty < maxSpatUncertainty")
   
   dat <- dat[order(dat$year), ]
   
@@ -32,6 +37,8 @@ assessSpeciesNumber <- function(dat, periods) {
     
   }
   
+  Ps <- paste0("p", 1:length(periods))
+  
   if (any(is.na(dat$year))) {
     
     warning(paste0("Removing", nrow(dat[is.na(dat$year), ]), "records because they are do not have a year associated."))
@@ -47,12 +54,15 @@ assessSpeciesNumber <- function(dat, periods) {
                    
                    dat <- dat[dat$identifier == i, ]
                    
-                   assign(paste0("props_", i), lapply(unique(dat$Period),
+                   assign(paste0("props_", i), lapply(Ps,
                                                       function(x) {
-
-                                                        data.frame(val = length(unique(dat$species[dat$Period == x & !is.na(dat$species)])),
+                                                        
+                                                        val <- ifelse(length(dat$species[dat$Period == x & !is.na(dat$species)]) > 0, length(unique(dat$species[dat$Period == x & !is.na(dat$species)])), 0)
+                                                        
+                                                        data.frame(val = val,
                                                                    group = i,
                                                                    Period = x)
+                                                        
                                                       })
                    )
                    

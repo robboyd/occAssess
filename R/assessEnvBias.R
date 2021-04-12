@@ -7,6 +7,7 @@
 #' @param backgroundEnvDat String. As envDat but N do not correspond to the locations of the occurrence data; instead, they are a background sample of environmental space in the study region. N does not have to be the same length as the coordinates in dat. backgroundEnvDat defaults to NULL in which case the function is calculated only for the sampled environmental space. 
 #' @param xPC Numeric. Which principal component to use as the x axis.
 #' @param yPC Numeric. As xPC but for the y axis. 
+#' @param maxSpatUncertainty Numeric. Maximum permitted spatial uncertainty. All records more uncertain than this value will be dropped. Units must match the units in your data.
 #' @return a ggplot2 object with separate panels for each level of identifier in dat.
 #' @export
 #' @examples
@@ -16,7 +17,8 @@ assessEnvBias <- function(dat,
                           envDat,
                           backgroundEnvDat = NULL,
                           xPC = 1,
-                          yPC = 2) {
+                          yPC = 2,
+                          maxSpatUncertainty = NULL) {
 
   if (any(!(c("species", "x", "y", "year", "spatialUncertainty", "identifier") %in% colnames(dat)))) stop("Data must includes columns for species, x, y, year, spatialUncertainty and identifier")
   
@@ -25,6 +27,10 @@ assessEnvBias <- function(dat,
   if (nrow(envDat) != nrow(dat)) stop("nrow of environmental data does not equal nrow of species occurrence data.")
 
   if (xPC > ncol(envDat) | yPC > ncol(envDat)) stop("You have chosen a principal component that doesn't exist for one of the x or y axes")
+  
+  if (!is.null(maxSpatUncertainty)) dat <- dat[!is.na(dat$spatialUncertainty) & dat$spatialUncertainty <= maxSpatUncertainty, ]
+  
+  if (nrow(dat) == 0) stop("No records with with spatialUncertainty < maxSpatUncertainty")
   
   if (!is.null(backgroundEnvDat) & any(colnames(envDat) != colnames(backgroundEnvDat))) stop("Column names of envDat must match column names of backgrounEnvDat")
   
