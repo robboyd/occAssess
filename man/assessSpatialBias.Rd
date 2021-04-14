@@ -4,11 +4,17 @@
 \alias{assessSpatialBias}
 \title{\code{assessSpatialBias}}
 \usage{
-assessSpatialBias(dat, periods, mask, nSamps = 50, degrade = TRUE)
+assessSpatialBias(
+  dat,
+  periods,
+  mask,
+  nSamps = 50,
+  degrade = TRUE,
+  maxSpatUncertainty = NULL
+)
 }
 \arguments{
-\item{dat}{string. A data.frame containing columns for species name (NA if not identified), an identifier (usually taxonomic group name),
-and spatial uncertainty.}
+\item{dat}{string. A data.frame containing columns species (species name), x (x coordinate), y (y coordinate), year, spatialUncertainty and identifier.}
 
 \item{periods}{Numeric. A list of time periods. For example, for two periods, the first spanning 1950 to 1990, and the second 1991 to 2019: periods = list(1950:1990, 1991:2019).}
 
@@ -19,10 +25,11 @@ Must be NA where points are not to be generated, and numeric where they may be g
 
 \item{degrade}{Logical. Whether or not to remove duplicated coordinates from the data. Coordinates are not considered to be duplicated if they are from
 different \code{periods}.}
+
+\item{maxSpatUncertainty}{Numeric. Maximum permitted spatial uncertainty. All records more uncertain than this value will be dropped. Units must match the units in your data.}
 }
 \value{
-A list with two elements if filter = FALSE and three elements if filter = TRUE. The elements are 1) data (summary of spatial uncertainty),
-2) a ggplot object and 3) the input data with the user-defined spatialUncertainty filter applied.
+A list with two elements: a ggplot2 object and the data underpinning the plot.
 }
 \description{
 This function calculates how far the data deviates from a random distribution in geographic space. It calculates
@@ -31,4 +38,7 @@ the mean of the neares neighbour distances of a random sample. The user can choo
 over, which should be larger where there are fewer data. This is because the random samples are generated in equal number to
 the data. Where the number of samples is > 1, the estimates come with a measures of uncertainty (5th and 95th percentiles).
 The index is calculated for each of n user-specified time periods.
+}
+\seealso{
+\code{\link{assessSpatialCov}} which maps your data in geographical space.
 }

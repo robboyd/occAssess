@@ -4,17 +4,21 @@
 \alias{assessRecordNumber}
 \title{\code{assessRecordNumber}}
 \usage{
-assessRecordNumber(dat, periods)
+assessRecordNumber(dat, periods, maxSpatUncertainty = NULL)
 }
 \arguments{
-\item{dat}{string. A data.frame containing columns for species name (NA if not identified), an identifier (usually taxonomic group name),
-and year (NA if not known).}
+\item{dat}{string. A data.frame containing columns species (species name), x (x coordinate), y (y coordinate), year, spatialUncertainty and identifier.}
 
 \item{periods}{String. A list of time periods. For example, for two periods, the first spanning 1950 to 1990, and the second 1991 to 2019: periods = list(1950:1990, 1991:2019).}
+
+\item{maxSpatUncertainty}{Numeric. Maximum permitted spatial uncertainty. All records more uncertain than this value will be dropped. Units must match the units in your data.}
+}
+\value{
+A list with two elements: a ggplot2 object and the data underpinning the plot.
 }
 \description{
 This function calculates the number of records in each year.
 }
 \seealso{
-\code{\link{assessSpeciesID}} which gives the number of species identified to species level in each year.
+\code{\link{assessSpeciesNumber}} which gives the number of species recorded each period.
 }
