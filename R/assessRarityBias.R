@@ -106,7 +106,7 @@ assessRarityBias <- function(dat, periods, res, prevPerPeriod, maxSpatUncertaint
                     
                     stats <- do.call("rbind", stats)
 
-                    mod <- summary(lm(stats$recs ~ stats$cells))$r.squared
+                    mod <- summary(stats::lm(stats$recs ~ stats$cells))$r.squared
                     
                   } else {
                     

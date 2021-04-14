@@ -69,7 +69,7 @@ assessEnvBias <- function(dat,
     
     plotDat <- lapply(unique(dat$identifier),
                   function(x) { 
-                    pca <- prcomp(dat[dat$identifier == x, envCols])
+                    pca <- stats::prcomp(dat[dat$identifier == x, envCols])
                     scores <- pca$x
                     data.frame(Period = dat$Period[dat$identifier == x],
                              identifier = x,
@@ -81,8 +81,8 @@ assessEnvBias <- function(dat,
 
     plotDat <- lapply(unique(dat$identifier),
                       function(x) { 
-                        pca <- prcomp(backgroundEnvDat)
-                        pca2 <- predict(pca, dat[dat$identifier == x, envCols])
+                        pca <- stats::prcomp(backgroundEnvDat)
+                        pca2 <- stats::predict(pca, dat[dat$identifier == x, envCols])
                         scores <- rbind(pca2, pca$x)
                         data.frame(Period = c(dat$Period[dat$identifier == x], rep("background", nrow(backgroundEnvDat))),
                                    identifier = x,

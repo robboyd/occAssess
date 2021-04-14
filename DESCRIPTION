@@ -25,6 +25,6 @@ Suggests:
     rmarkdown,
     testthat,
     rasterVis
-Depends: 
-    stats
+Depends:
+    R(>= 3.5.0)
 VignetteBuilder: knitr
