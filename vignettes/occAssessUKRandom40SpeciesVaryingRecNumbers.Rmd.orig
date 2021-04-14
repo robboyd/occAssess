@@ -1,7 +1,7 @@
 ---
 title: "Worked example 2: What does a near-random dataset look like?"
 output: 
-html_vignette:
+html_document:
 keep_md: yes
 vignette: >
   %\VignetteIndexEntry{occAssessUKRandom40SpeciesVaryingRecNumbers}
@@ -14,7 +14,8 @@ knitr::opts_chunk$set(
   collapse = TRUE,
   comment = "#>",
   dev = "png",
-  dpi = 300
+  dpi = 300,
+  fig.path = ""
 )
 ```
 
