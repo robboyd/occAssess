@@ -7,7 +7,6 @@
 #' @param periods String. A list of time periods. For example, for two periods, the first spanning 1950 to 1990, and the second 1991 to 2019: periods = list(1950:1990, 1991:2019).
 #' @param spatRes Numeric. Spatial resolution at which to calculate repeat visits. Depends on CRS (use metres for eastings and northings, and decimals for lat lon).
 #' @export
-#' @examples
 
 assessRepeatVisits <- function(dat, periods, spatRes) {
 

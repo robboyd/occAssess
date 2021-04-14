@@ -26,6 +26,3 @@ the number of grid cells with records (proxy for range size) on the number of re
 as an index proportionality between the two measures. A lower r2 indicates lower proportionality between range size and the number of records relative
 to a higher score. Note that an index will not be calculated for any period/ identifier combination with fewer than 5 species. In these cases the regressions on which the indices are based are likely meaningless.
 }
-\examples{
-
-}

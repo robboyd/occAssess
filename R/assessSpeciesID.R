@@ -7,7 +7,6 @@
 #' @param maxSpatUncertainty Numeric. Maximum permitted spatial uncertainty. All records more uncertain than this value will be dropped. Units must match the units in your data.
 #' @return A list with two elements: a ggplot2 object and the data underpinning the plot.
 #' @export
-#' @examples
 
 assessSpeciesID <- function(dat, periods, type, maxSpatUncertainty = NULL) {
 

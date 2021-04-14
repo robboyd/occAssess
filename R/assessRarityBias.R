@@ -11,7 +11,6 @@
 #' @param prevPerPeriod Logical. If TRUE then prevalence (number of grid cells with data) is calculated per period and if FALSE then prevalence is calculated over all periods.
 #' @param maxSpatUncertainty Numeric. Maximum permitted spatial uncertainty. All records more uncertain than this value will be dropped. Units must match the units in your data.
 #' @export
-#' @examples
 #' 
 
 assessRarityBias <- function(dat, periods, res, prevPerPeriod, maxSpatUncertainty = NULL) {

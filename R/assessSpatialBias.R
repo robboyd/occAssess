@@ -17,7 +17,6 @@
 #' @seealso \code{\link{assessSpatialCov}} which maps your data in geographical space.
 #' @return A list with two elements: a ggplot2 object and the data underpinning the plot.
 #' @export
-#' @examples
 
 assessSpatialBias <- function(dat, periods, mask, nSamps = 50, degrade = TRUE, maxSpatUncertainty = NULL) {
   

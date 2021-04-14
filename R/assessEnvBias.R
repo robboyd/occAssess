@@ -10,7 +10,6 @@
 #' @param maxSpatUncertainty Numeric. Maximum permitted spatial uncertainty. All records more uncertain than this value will be dropped. Units must match the units in your data.
 #' @return a ggplot2 object with separate panels for each level of identifier in dat.
 #' @export
-#' @examples
 
 assessEnvBias <- function(dat,
                           periods,

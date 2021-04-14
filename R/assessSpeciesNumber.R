@@ -7,7 +7,6 @@
 #' @seealso \code{\link{assessSpeciesID}} which gives the number or proportion of records identified to species level. 
 #' @return A list with two elements: a ggplot2 object and the data underpinning the plot.
 #' @export
-#' @examples
 
 assessSpeciesNumber <- function(dat, periods, maxSpatUncertainty = NULL) {
   

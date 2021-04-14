@@ -21,14 +21,14 @@ assessSpatialCov(
 
 \item{logCount}{Logical. Whether to log transform counts for visual purposes. Useful where there is large variation in counts across cells.}
 
+\item{countries}{String or vector. Country names to be passed to ggplot2::map_data. Needed to add borders to your plot. Countries should only be used if you are working on
+the WGS84 coordinate reference system. Otherwise see shp.}
+
 \item{shp}{String. If you are not working on WGS84, then you will need to provide a shapefile (spatialPolygons or spatialPolygonsDataFrame) with the country borders on the relevant crs for plotting.}
 
 \item{periods}{String. A list of time periods. For example, for two periods, the first spanning 1950 to 1990, and the second 1991 to 2019: periods = list(1950:1990, 1991:2019).}
 
 \item{maxSpatUncertainty}{Numeric. Maximum permitted spatial uncertainty. All records more uncertain than this value will be dropped. Units must match the units in your data.}
-
-\item{countries.}{String or vector. Country names to be passed to ggplot2::map_data. Needed to add borders to your plot. Countries should only be used if you are working on
-the WGS84 coordinate reference system. Otherwise see shp.}
 }
 \value{
 A list with n ggplot2 objects where n is the number of levels in the identifier field of dat.

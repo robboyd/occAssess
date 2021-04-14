@@ -7,7 +7,6 @@
 #' @return A list with two elements if filter = FALSE and three elements if filter = TRUE. The elements are 1) data (summary of spatial uncertainty),
 #'         2) a ggplot object and 3) the input data with the user-defined spatialUncertainty filter applied.
 #' @export
-#' @examples
 
 
 assessSpatialUncertainty <- function(dat, periods) {

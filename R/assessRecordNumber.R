@@ -7,7 +7,6 @@
 #' @return A list with two elements: a ggplot2 object and the data underpinning the plot.
 #' @seealso \code{\link{assessSpeciesNumber}} which gives the number of species recorded each period. 
 #' @export
-#' @examples
 
 assessRecordNumber <- function(dat, periods, maxSpatUncertainty = NULL) {
   
