@@ -5,14 +5,13 @@
 #' @param periods String. A list of time periods. For example, for two periods, the first spanning 1950 to 1990, and the second 1991 to 2019: periods = list(1950:1990, 1991:2019).
 #' @param res Numeric. Spatial resolution at which to grid the occurrence data.
 #' @param logCount Logical. Whether to log transform counts for visual purposes. Useful where there is large variation in counts across cells. 
-#' @param countries. String or vector. Country names to be passed to ggplot2::map_data. Needed to add borders to your plot. Countries should only be used if you are working on
+#' @param countries String or vector. Country names to be passed to ggplot2::map_data. Needed to add borders to your plot. Countries should only be used if you are working on
 #'        the WGS84 coordinate reference system. Otherwise see shp. 
 #' @param shp String. If you are not working on WGS84, then you will need to provide a shapefile (spatialPolygons or spatialPolygonsDataFrame) with the country borders on the relevant crs for plotting. 
 #' @param maxSpatUncertainty Numeric. Maximum permitted spatial uncertainty. All records more uncertain than this value will be dropped. Units must match the units in your data.
 #' @return A list with n ggplot2 objects where n is the number of levels in the identifier field of dat.
 #' @seealso \code{\link{assessSpatialBias}} which gives a measure of how far your data eviates from a random distribution in space. 
 #' @export
-#' @examples
 
 assessSpatialCov <- function (dat, res, logCount = FALSE, countries, shp = NULL, periods, maxSpatUncertainty = NULL) {
 
