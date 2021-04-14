@@ -19,11 +19,12 @@ RoxygenNote: 7.1.1
 Imports:
     ggplot2,
     raster,
-    spatstat,
-    stats
+    spatstat
 Suggests: 
     knitr,
     rmarkdown,
     testthat,
     rasterVis
+Depends: 
+    stats
 VignetteBuilder: knitr
