@@ -10,7 +10,7 @@ Authors@R:
 Description: Contains a number of discrete functions, each of which can be used to assess a particular form of bias, uncertainty or coverage. Generally, the user must pass
     their occurrence data to the functions along with a list of time periods into which the outputs will be split. The functions generally return a list with two elements: 
     a ggplot2 object, and the data that underpins that plot.
-License: use_gpl3_license() 
+License: GPL-3 
     pick a license
 Encoding: UTF-8
 LazyData: true
