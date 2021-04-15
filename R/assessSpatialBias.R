@@ -95,9 +95,9 @@ if (degrade == TRUE & any(duplicated(dat[, c("x", "y", "identifier", "Period")])
                         
                         meanInd <- mean(indDist)
                         
-                        upper <- as.numeric(quantile(indDist, prob = 0.95))
+                        upper <- as.numeric(stats::quantile(indDist, prob = 0.95))
                         
-                        lower <- as.numeric(quantile(indDist, prob = 0.05))
+                        lower <- as.numeric(stats::quantile(indDist, prob = 0.05))
                         
                       } else {
                         

@@ -24,7 +24,8 @@ Imports:
 Suggests: 
     knitr,
     rmarkdown,
-    testthat
+    testthat,
+    maps
 Depends:
     R(>= 3.5.0)
 VignetteBuilder: knitr
