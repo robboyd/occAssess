@@ -70,7 +70,7 @@ if (degrade == TRUE & any(duplicated(dat[, c("x", "y", "identifier", "Period")])
                         
                         if (nrow(pDat) < 100) warning(paste("Fewer than 100 records in period", y, "for", i, ". View this result with caution."))
                         
-                        empDist <- spatstat::nndist(X = pDat$x, Y = pDat$y, k = 1)
+                        empDist <- spatstat.geom::nndist(X = pDat$x, Y = pDat$y, k = 1)
                         
                         empMean <- mean(empDist)
                         
@@ -81,7 +81,7 @@ if (degrade == TRUE & any(duplicated(dat[, c("x", "y", "identifier", "Period")])
                                                                            size = nrow(pDat),
                                                                            xy = T)
                                                
-                                               dist <- spatstat::nndist(X = ran[,1], Y = ran[,2], k = 1) 
+                                               dist <- spatstat.geom::nndist(X = ran[,1], Y = ran[,2], k = 1) 
                                                
                                                NN <- mean(dist)
                                                
