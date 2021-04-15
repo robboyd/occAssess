@@ -1,0 +1,198 @@
+---
+title: "Worked example 3: A fully reproducible case study"
+output: 
+html_vignette:
+vignette: >
+  %\VignetteIndexEntry{occAssessReproducible}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+
+
+
+```{r sim1}
+if (!"occAssess" %in% installed.packages()) devtools::install_github("https://github.com/robboyd/occAssess")
+library(occAssess)
+```
+
+### Introduction
+
+This vignette provides a worked example for the functionality of occAssess. For a full tutorial see the main vignette at https://github.com/robboyd/occAssess/tree/main/vignettes.occAssess.Rmd.  
+
+### Occurrence data 
+
+In this worked example, I simulated data for 11 species across the UK. The species were simulated with varying prevalence (number of records drawn from a uniform distribution between 500 and 1500) and randomly over the period 2001 to 2010. The data were generated as weighted random samples across space (WGS84 coordinate reference system), where the weights were taken from a separate species distribution modelling exercises. Each simulated data point was randomly assigned to one of two surveys which are specified in the "identifier" field. The data can be accessed within occAssess as follows:
+
+
+```{r sim2}
+
+data("simDat")
+
+spDat <- simDat
+
+str(spDat)
+
+```
+
+### Periods
+
+In this example, we will specify five periods over 2001 to 2010
+
+
+```{r sim3}
+
+periods <- list(2001:2002, 2003:2004, 2005:2006, 2007:2008, 2009:2010)
+```
+
+### Functions
+
+All of the functions in occAssess require two common arguments: dat and periods (outlined above). I will run through each function in the following, indicating where additional arguments are required. Generally, the functions in occAssess return a list with two elements: one being a ggplot2 object, with a separate panel or feature for each level of identifier; and a second with the data underpinning the plot.
+
+#### assessRecordNumber
+
+The first function I will introduce is the simplest: assessRecordNumber. This function simply plots out the number of records per year in your dataset. 
+
+
+```{r sim4}
+
+nRec <- assessRecordNumber(dat = spDat,
+                           periods = periods)
+
+
+nRec$plot
+```
+
+This function enables researchers to quickly establish how the number of records has changed over time. 
+
+#### assessSpeciesNumber 
+
+In addition to the number of records, you may wish to know how the number of species (taxonomic coverage) in your dataset changes over time. For this you can use the function assessSpeciesNumber:
+
+
+```{r sim5}
+
+nSpec <- assessSpeciesNumber(dat = spDat,
+                           periods = periods)
+
+nSpec$plot
+```
+
+#### assessSpeciesID 
+
+It has been speculated that apparent changes in taxonomic coverage could, in fact, reflect a change in taxonomic expertise over time. For example, if fewer individuals have the skill to identify certain species, then it may not appear in your dataset in the later periods. The function assessSpeciesID treats the proportion of records identified to species level as a proxy for taxonomic expertise: 
+
+
+```{r sim6}
+
+propID <- assessSpeciesID(dat = spDat,
+                           periods = periods,
+                           type = "proportion")
+
+propID$plot + ggplot2::ylim(c(0,1)) ## it is easy to modify the outputs of the functions in occAssess to e.g. change axis ranges
+```
+
+The argument "type" can take the values proportion (proportion of records identified to species level) or count (number of records identified to species level). 
+
+#### assessRarityBias
+
+A number of studies have defined taxonomic bias in a dataset as the degree of proportionality between species' range sizes (usually proxied by the number of grid cells on which it has been recorded) and the total number of records. One can regress the number of records on range size, and the residuals give an index of how over-or undersampled a species is given its prevalence. The function assessRarityBias conducts these analyses for each time period, and uses the r2 value from the linear regressions as an index proportionality between range sizes and number of records. Prevalence may be calculated for each time period if prevPerPeriod = FALSE, and over the whole extent f the data otherwise. Higher values indicate that species' are sampled in proportion to their range sizes whereas lower values indicate that some species are over- or undersampled. 
+
+
+```{r sim7}
+
+taxBias <- assessRarityBias(dat = spDat,
+                            periods = periods,
+                            res = 20000,
+                            prevPerPeriod = TRUE)
+
+taxBias$plot + ggplot2::ylim(c(0,1))
+```
+
+As you can see, the rarity bias index is roughly 0 for both levels of identifier and in each period. This indicates that species are not recorded in proportion to their commonness, which is expected given that the data were not simulated in such a way. 
+
+#### assessSpatialCov 
+
+The function assessSpatialCov grids your data at a specified spatial resolution then maps it in geographic space. As I am working on the WGS84 coordinate reference system, I do not have to provide a shapefile with the relevant country borders; instead, I can specify "UK" in the countries argument. The function returns a list with n elements where n is the number of levels in the identifier field. Each element contains N maps where N is the number of time periods: 
+
+
+```{r sim8}
+
+map <- assessSpatialCov(dat = spDat,
+                        periods = periods,
+                        res = 0.1,
+                        logCount = TRUE,
+                        countries = "UK")
+
+map$survey1
+```
+
+
+```{r sim9}
+
+map$survey2
+```
+
+As you can see there are three new arguments to be specified. res is the spatial resolution at which you would like to map the data (units depend on you coordinate reference system, e.g. m if easting and northing, and decimal degress in lon/ lat); logCount indicates whether or not you would like to log10 transform the counts for visual purposes; countries defines the countries covered by your data; and shp is  shapefile delimiting your study area if countries are NULL. The countries argument is the simplest way to specify your study boundaries if you are working at country or international level and on the WGS84 lat/ lon coordinate reference system. If you are not working on WGS84, or at a country/ international level, then you will need to provide a shapefile to shp delimiting your boundaries for plotting.
+
+
+#### assessSpatialBias
+
+Even if your data has good spatial coverage, it may be biased; that is to say, it may deviate from a random distribution in space. The function assessSpatialBias provides an index of how far your data deviates from a random distribution. To do this it simulates an equal number of points to your data randomly across your study region. Then, for each time period, it calculates the average nearest neighbour distance across your data points and divides it by the average nearest neighbour distance from the random sample. If the index is lower than one then your data is more clustered than the random sample, and if it is above one it is more dispersed. To delineate your study area, you must provide a mask layer. The mask is a raster object which is has numeric values within your study area, and is NA outside of your study area. You can access a mask layer from within occAssesss for this example:
+
+
+```{r sim10}
+
+data("UKWGS84mask")
+
+UKWGS84mask
+
+```
+
+
+```{r sim11}
+
+spatBias <- assessSpatialBias(dat = spDat,
+                              periods = periods,
+                              mask = UKWGS84mask,
+                              nSamps = 10,
+                              degrade = TRUE)
+
+str(spatBias$data)
+
+spatBias$plot + ggplot2::ylim(c(0, 2.15)) # ylim set to theoretical range of possible values for the nearest neighbour index
+```
+
+The argument nSamps indicates how many random distributions should be drawn, and the argument degrade = TRUE indicates that any duplicated coordinates within a time period and for a given level of identifier are removed. The shaded regions on the plot indicate the 5th and 95th percentiles of the nearest neighbour index calculated over nSamps random samples. 
+
+#### assessEnvBias 
+
+Spatial bias in your dataset does not necessarily tell you anything about environmental bias. The function assessEnvBias assess the degree to which your data are biased across time periods in environmental space. To do this we first need to get some climate data. I will use the standard suite of 19 bioclimatic variables from worldclim. It is possible to get this data through R using the raster package or online at https://www.worldclim.org/. For this example, you can access the environmental data that corresponds to the occurrence data from within occAssess. I have also extracted the climate data at 4000 random locations in the UK as "background" data which I will treat as background climate space. These data can be obtained as follows:
+
+
+```{r sim12}
+
+data("simEnvDat") # climate data at locations of simulated occurrence data
+
+data("backgroundEnvDat") # climate data at 4000 random locations across the UK
+
+## How to get the data using raster::getData()
+
+#clim <- raster::getData("worldclim",var="bio",res=10)
+
+# this will need to be reprojected to the same crs as your data using e.g. raster::projectRaster and then you will need to extract the climate data at the locations of your occurrence data using raster::extract()
+```
+assessEnvBias conducts a principal component analysis on your environmental data, then maps your occurrence data in environmental space:
+
+
+```{r sim13}
+
+assessEnvBias(dat = spDat,
+              periods = periods,
+              envDat = simEnvDat,
+              backgroundEnvDat = backgroundEnvDat,
+              xPC = 1,
+              yPC = 2)
+```
+
+The arguments yPC and xPC indicate which principal components you would like on the y and x axes, respectively. 
