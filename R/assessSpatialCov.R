@@ -11,6 +11,7 @@
 #' @param maxSpatUncertainty Numeric. Maximum permitted spatial uncertainty. All records more uncertain than this value will be dropped. Units must match the units in your data.
 #' @return A list with n ggplot2 objects where n is the number of levels in the identifier field of dat.
 #' @seealso \code{\link{assessSpatialBias}} which gives a measure of how far your data eviates from a random distribution in space. 
+#' @importFrom rasterVis gplot
 #' @export
 
 assessSpatialCov <- function (dat, res, logCount = FALSE, countries, shp = NULL, periods, maxSpatUncertainty = NULL) {
