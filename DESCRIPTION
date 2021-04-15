@@ -1,6 +1,6 @@
 Package: occAssess
 Title: Screen species occurrence data for biases
-Version: 0.0.0.9000
+Version: 1.0.0
 Authors@R: 
     person(given = "Rob",
            family = "Boyd",
