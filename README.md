@@ -65,7 +65,7 @@ str(nRec$data)
 nRec$plot
 ```
 
-![plot of chunk unnamed-chunk-4](unnamed-chunk-4-1.png)
+![plot of chunk unnamed-chunk-4](/vignettes/unnamed-chunk-4-1.png)
 
 This function enables researchers to quickly establish how the number of records has changed over time. 
 
