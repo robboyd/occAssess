@@ -157,7 +157,7 @@ maps[[2]] + ggplot2::xlim(c(-90, -30)) # Syrphidae
 #> Warning: Removed 539 row(s) containing missing values (geom_path).
 ```
 
-![plot of chunk unnamed-chunk-8](unnamed-chunk-8-2.png)
+![plot of chunk unnamed-chunk-8](/vignettes/unnamed-chunk-8-2.png)
 
 As you can see there are three new arguments to be specified. res is the spatial resolution at which you would like to map the data (units depend on you coordinate reference system, e.g. m if easting and northing, and decimal degress in lon/ lat); logCount indicates whether or not you would like to log10 transform the counts for visual purposes; and countries defines the countries covered by your data. Countries must be specified in order to plot their boundaries.
 
