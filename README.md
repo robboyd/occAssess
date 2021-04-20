@@ -85,7 +85,7 @@ str(nSpec$data)
 nSpec$plot
 ```
 
-![plot of chunk unnamed-chunk-5](unnamed-chunk-5-1.png)
+![plot of chunk unnamed-chunk-5](/vignettes/unnamed-chunk-5-1.png)
 
 #### assessSpeciesID 
 
