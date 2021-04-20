@@ -104,7 +104,7 @@ str(propID$data)
 propID$plot
 ```
 
-![plot of chunk unnamed-chunk-6](unnamed-chunk-6-1.png)
+![plot of chunk unnamed-chunk-6](/vignettes/unnamed-chunk-6-1.png)
 
 The argument "type" can take the values proportion (proportion of records identified to species level) or count (number of records identified to species level). 
 
@@ -130,7 +130,7 @@ str(taxBias$data)
 taxBias$plot +ggplot2::ylim(c(0,1))
 ```
 
-![plot of chunk unnamed-chunk-7](unnamed-chunk-7-1.png)
+![plot of chunk unnamed-chunk-7](/vignettes/unnamed-chunk-7-1.png)
 
 #### assessSpatialCov 
 
@@ -149,7 +149,7 @@ maps[[1]] + ggplot2::xlim(c(-90, -30)) # Phyllostomidae
 #> Warning: Removed 539 row(s) containing missing values (geom_path).
 ```
 
-![plot of chunk unnamed-chunk-8](unnamed-chunk-8-1.png)
+![plot of chunk unnamed-chunk-8](/vignettes/unnamed-chunk-8-1.png)
 
 ```r
 maps[[2]] + ggplot2::xlim(c(-90, -30)) # Syrphidae
@@ -195,7 +195,7 @@ str(spatBias$data)
 spatBias$plot + ggplot2::ylim(c(0,1))
 ```
 
-![plot of chunk unnamed-chunk-10](unnamed-chunk-10-1.png)
+![plot of chunk unnamed-chunk-10](/vignettes/unnamed-chunk-10-1.png)
 
 The argument nSamps indicates how many random distributions should be drawn, and the argument degrade = TRUE indicates that any duplicated coordinates within a time period and for a given level of identifier are removed. The shaded regions on the plot indicate the 5th and 95th percentiles of the nearest neighbour index calculated over nSamps random samples. 
 
@@ -241,7 +241,7 @@ assessEnvBias(dat = spDat,
               periods = periods) # xPC and yPC indicate which principal components to set as the x and y axes, respectively
 ```
 
-![plot of chunk unnamed-chunk-12](unnamed-chunk-12-1.png)
+![plot of chunk unnamed-chunk-12](/vignettes/unnamed-chunk-12-1.png)
 <!-- badges: start -->
   [![Travis build status](https://travis-ci.com/robboyd/occAssess.svg?branch=master)](https://travis-ci.com/robboyd/occAssess)
   <!-- badges: end -->
