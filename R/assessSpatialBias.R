@@ -9,7 +9,10 @@
 #' @param dat string. A data.frame containing columns species (species name), x (x coordinate), y (y coordinate), year, spatialUncertainty and identifier. 
 #' @param periods Numeric. A list of time periods. For example, for two periods, the first spanning 1950 to 1990, and the second 1991 to 2019: periods = list(1950:1990, 1991:2019).
 #' @param nSamps Logical. How many iterations of random samples to use for comparison of empirical NN index with random NN index.
-#' @param mask String. A raster object used to indicate the study region over which the random distribution should be generated. 
+#' @param mask String. A raster object used to indicate the study region over which the random distribution should be generated. In most cases this will be a single raster layer. However, where the identifier 
+#'             field is used to subset the data spatially (e.g. splitting it by country, continent, etc.) then mask should be a raster stack with n layers, where n is equal to the number of levels in the identifier field. 
+#'             mask may have fewer layers than the number of levels in identifier field when identifier refers to spatial subsets, but any rows in dat with an identifier for which there is no layer 
+#'             in mask will be dropped. If nlayers(mask) > 1, i.e. if the identifier field is used to subset the data spatially, then names(mask) should match the names in the identifier field.
 #'        Must be NA where points are not to be generated, and numeric where they may be generated. For example, this could be a map of worldclim climate data, cropped to the study region.
 #' @param degrade Logical. Whether or not to remove duplicated coordinates from the data. Coordinates are not considered to be duplicated if they are from
 #'        different \code{periods}.
@@ -21,12 +24,24 @@
 assessSpatialBias <- function(dat, periods, mask, nSamps = 50, degrade = TRUE, maxSpatUncertainty = NULL) {
   
   if (any(!(c("species", "x", "y", "year", "spatialUncertainty", "identifier") %in% colnames(dat)))) stop("Data must includes columns for species, x, y, year, spatialUncertainty and identifier")
-  
+    
   if (any(is.na(dat$identifier))) stop("One or more NAs in the identifier field. NAs are not permitted.")
   
   if (!is.null(maxSpatUncertainty)) dat <- dat[!is.na(dat$spatialUncertainty) & dat$spatialUncertainty <= maxSpatUncertainty, ]
-  
+
   if (nrow(dat) == 0) stop("No records with with spatialUncertainty < maxSpatUncertainty")
+  
+  if (raster::nlayers(mask) > 1) {
+    
+    print("You have more than one layer in mask - this should only be the case if your identifier field denotes spatial subsets of your data.")
+    
+    if (!any(unique(dat$identifier) %in% names(mask))) stop("No names of layers in mask match levels in the identifier field. Make sure the names in mask correspond to identifier where identifier denotes spatial subsets; otherwise, you should not have multiple layers in mask.")
+      
+    if (any(!(unique(dat$identifier) %in% names(mask)))) warning("Some levels of identifier are not present in names(mask). Dropping data with an identifier for which no mask layer has been provided.")
+    
+    dat <- dat[-which(!dat$identifier %in% names(mask)), ]
+    
+  }
   
   Ps <- paste0("p", 1:length(periods))
 
@@ -58,8 +73,18 @@ if (degrade == TRUE & any(duplicated(dat[, c("x", "y", "identifier", "Period")])
   dat <- dat[order(dat$year), ]
   
   if (any(is.na(dat$year))) dat <- dat[-which(is.na(dat$year)), ]
-  
+
   for (i in unique(dat$identifier)) {
+
+    if (raster::nlayers(mask) > 1) { ## ifelse won't work for some reason...
+      
+      domain <- mask[[i]]
+      
+    } else {
+      
+      domain <- mask
+      
+    }
 
     index <- lapply(Ps,
                     function(y) {
@@ -77,7 +102,7 @@ if (degrade == TRUE & any(duplicated(dat[, c("x", "y", "identifier", "Period")])
                         randomSamp <- lapply(1:nSamps, 
                                              function(x) {
                                                
-                                               ran <- raster::sampleRandom(mask, 
+                                               ran <- raster::sampleRandom(domain, 
                                                                            size = nrow(pDat),
                                                                            xy = T)
                                                

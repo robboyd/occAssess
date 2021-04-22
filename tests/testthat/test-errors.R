@@ -5,6 +5,10 @@ context("errors and warnings")
 
 data("random40Species")
 
+data("UKWGS84mask")
+
+mask <- stack(UKWGS84mask, UKWGS84mask)
+
 periods <- list(2000:2004, 2005:2010)
 
 test_that("check basic errors are caught", {
@@ -12,6 +16,8 @@ test_that("check basic errors are caught", {
   expect_error( assessRecordNumber(dat = random40Species[, -1], periods = periods) )
   
   expect_error( assessRecordNumber(dat = random40Species[dat$species == "human", ], periods = periods) )
+  
+  expect_error( assessSpatialBias(dat = random40Species, periods = periods, mask = mask, nSamps = 3) )
   
   random40Species$identifier[10] <- NA
   
