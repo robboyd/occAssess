@@ -18,7 +18,10 @@ assessSpatialBias(
 
 \item{periods}{Numeric. A list of time periods. For example, for two periods, the first spanning 1950 to 1990, and the second 1991 to 2019: periods = list(1950:1990, 1991:2019).}
 
-\item{mask}{String. A raster object used to indicate the study region over which the random distribution should be generated.
+\item{mask}{String. A raster object used to indicate the study region over which the random distribution should be generated. In most cases this will be a single raster layer. However, where the identifier
+field is used to subset the data spatially (e.g. splitting it by country, continent, etc.) then mask should be a raster stack with n layers, where n is equal to the number of levels in the identifier field.
+mask may have fewer layers than the number of levels in identifier field when identifier refers to spatial subsets, but any rows in dat with an identifier for which there is no layer
+in mask will be dropped. If nlayers(mask) > 1, i.e. if the identifier field is used to subset the data spatially, then names(mask) should match the names in the identifier field.
 Must be NA where points are not to be generated, and numeric where they may be generated. For example, this could be a map of worldclim climate data, cropped to the study region.}
 
 \item{nSamps}{Logical. How many iterations of random samples to use for comparison of empirical NN index with random NN index.}

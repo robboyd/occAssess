@@ -8,7 +8,7 @@ assessSpatialCov(
   dat,
   res,
   logCount = FALSE,
-  countries,
+  countries = NULL,
   shp = NULL,
   periods,
   maxSpatUncertainty = NULL
@@ -21,10 +21,14 @@ assessSpatialCov(
 
 \item{logCount}{Logical. Whether to log transform counts for visual purposes. Useful where there is large variation in counts across cells.}
 
-\item{countries}{String or vector. Country names to be passed to ggplot2::map_data. Needed to add borders to your plot. Countries should only be used if you are working on
-the WGS84 coordinate reference system. Otherwise see shp.}
+\item{countries}{String or vector. Country names to be passed to ggplot2::map_data. Needed to add country borders to your plot. Countries should only be used if you are working on
+the WGS84 coordinate reference system. Otherwise see shp. If the levels in the identifier field of dat are spatial units (e.g. countries), then the countries argument should be provided a list object.
+The names of each element in the list should correspond to one level of identifier, and the contents of that element should be a country name that is valid for use with ggplot2::map_data. Both countries and shp may
+be left unspecified, but in this case no country borders will be presented on the returned plots. Do not specify both countries and shp.}
 
-\item{shp}{String. If you are not working on WGS84, then you will need to provide a shapefile (spatialPolygons or spatialPolygonsDataFrame) with the country borders on the relevant crs for plotting.}
+\item{shp}{String. If you are not working on WGS84, then you can provide a shapefile (spatialPolygons or spatialPolygonsDataFrame) with the country borders on the relevant crs for plotting. As with countries,
+if the levels in identifier denote spatial subsets of the data, then shp may be provided as a list, with the name of each element corresponding to one level of the identifier field in dat.
+Do not specify both countries and dat.}
 
 \item{periods}{String. A list of time periods. For example, for two periods, the first spanning 1950 to 1990, and the second 1991 to 2019: periods = list(1950:1990, 1991:2019).}
 
