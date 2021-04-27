@@ -37,12 +37,17 @@ assessSpatialBias <- function(dat, periods, mask, nSamps = 50, degrade = TRUE, m
     
     if (!any(unique(dat$identifier) %in% names(mask))) stop("No names of layers in mask match levels in the identifier field. Make sure the names in mask correspond to identifier where identifier denotes spatial subsets; otherwise, you should not have multiple layers in mask.")
       
-    if (any(!(unique(dat$identifier) %in% names(mask)))) warning("Some levels of identifier are not present in names(mask). Dropping data with an identifier for which no mask layer has been provided.")
+    if (any(!(unique(dat$identifier) %in% names(mask)))) {
+      
+      
+      warning("Some levels of identifier are not present in names(mask). Dropping data with an identifier for which no mask layer has been provided.")
     
-    dat <- dat[-which(!dat$identifier %in% names(mask)), ]
+      dat <- dat[-which(!dat$identifier %in% names(mask)), ]
+      
+    }
     
   }
-  
+
   Ps <- paste0("p", 1:length(periods))
 
   dat <- dat[order(dat$year), ]
@@ -54,7 +59,7 @@ assessSpatialBias <- function(dat, periods, mask, nSamps = 50, degrade = TRUE, m
     dat <- dat[-drop, ]
     
   }
-  
+
   dat$Period <- NA
   
   for (i in 1: length(periods)) {
