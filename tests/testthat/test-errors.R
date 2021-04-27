@@ -19,9 +19,13 @@ test_that("check basic errors are caught", {
   
   expect_error( assessSpatialBias(dat = random40Species, periods = periods, mask = mask, nSamps = 3) )
   
+  expect_error( assessSpatialCov(dat = random40Species, periods = periods, res = 20000, 
+                                 countries = "UK", shp = "shp", logCount = TRUE))
+  
   random40Species$identifier[10] <- NA
   
   expect_error( assessRecordNumber(dat = random40Species, periods = periods))
+  
   
 })
 

@@ -1,4 +1,5 @@
 library(occAssess)
+library(testthat)
 
 context("test outputs")
 
@@ -22,6 +23,10 @@ test_that("check outputs are as expected", {
   expect_equal( assessSpeciesNumber(dat = random40Species, periods = periods)$data$val[1], 40 )
   
   expect_equal( assessSpeciesID(dat = random40Species, periods = periods, type = "proportion")$data$prop[1], 1 )
+  
+  expect_true( is.list(assessSpatialCov(dat = random40Species, res = 20000, periods = periods)))
+  
+  expect_true( length(assessSpatialCov(dat = random40Species, res = 20000, periods = periods)) == 2)
   
 })
 

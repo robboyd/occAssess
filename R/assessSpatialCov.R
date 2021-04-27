@@ -5,17 +5,25 @@
 #' @param periods String. A list of time periods. For example, for two periods, the first spanning 1950 to 1990, and the second 1991 to 2019: periods = list(1950:1990, 1991:2019).
 #' @param res Numeric. Spatial resolution at which to grid the occurrence data.
 #' @param logCount Logical. Whether to log transform counts for visual purposes. Useful where there is large variation in counts across cells. 
-#' @param countries String or vector. Country names to be passed to ggplot2::map_data. Needed to add borders to your plot. Countries should only be used if you are working on
-#'        the WGS84 coordinate reference system. Otherwise see shp. 
-#' @param shp String. If you are not working on WGS84, then you will need to provide a shapefile (spatialPolygons or spatialPolygonsDataFrame) with the country borders on the relevant crs for plotting. 
+#' @param countries String or vector. Country names to be passed to ggplot2::map_data. Needed to add country borders to your plot. Countries should only be used if you are working on
+#'        the WGS84 coordinate reference system. Otherwise see shp. If the levels in the identifier field of dat are spatial units (e.g. countries), then the countries argument should be provided a list object. 
+#'        The names of each element in the list should correspond to one level of identifier, and the contents of that element should be a country name that is valid for use with ggplot2::map_data. Both countries and shp may 
+#'        be left unspecified, but in this case no country borders will be presented on the returned plots. Do not specify both countries and shp.
+#' @param shp String. If you are not working on WGS84, then you can provide a shapefile (spatialPolygons or spatialPolygonsDataFrame) with the country borders on the relevant crs for plotting. As with countries, 
+#'            if the levels in identifier denote spatial subsets of the data, then shp may be provided as a list, with the name of each element corresponding to one level of the identifier field in dat. 
+#'            Do not specify both countries and dat.
 #' @param maxSpatUncertainty Numeric. Maximum permitted spatial uncertainty. All records more uncertain than this value will be dropped. Units must match the units in your data.
 #' @return A list with n ggplot2 objects where n is the number of levels in the identifier field of dat.
 #' @seealso \code{\link{assessSpatialBias}} which gives a measure of how far your data eviates from a random distribution in space. 
 #' @importFrom rasterVis gplot
 #' @export
 
-assessSpatialCov <- function (dat, res, logCount = FALSE, countries, shp = NULL, periods, maxSpatUncertainty = NULL) {
+assessSpatialCov <- function (dat, res, logCount = FALSE, countries = NULL, shp = NULL, periods, maxSpatUncertainty = NULL) {
 
+  if (is.list(countries) | is.list(shp)) print("You have specified shp or countries as a list object; this should only be the case if your identifier field denotes spatial subsets of your data.")
+  
+  if (!is.null(shp) & !is.null(countries)) stop("Only one of countries and shp may be specified; they do the same thing. If you are working on WGS84 it is recommended that you use countries; otherwise, you cannot use countries and should use shp.")
+  
   if (any(!(c("species", "x", "y", "year", "spatialUncertainty", "identifier") %in% colnames(dat)))) stop("Data must includes columns for species, x, y, year, spatialUncertainty and identifier")
   
   if (any(is.na(dat$identifier))) stop("One or more NAs in the identifier field. NAs are not permitted.")
@@ -41,7 +49,7 @@ assessSpatialCov <- function (dat, res, logCount = FALSE, countries, shp = NULL,
     dat$Period <- ifelse(dat$year %in% periods[[i]], paste0("p", i), dat$Period)
     
   }
-  
+
   xmin <- min(dat$x, na.rm = T)
   
   xmax <- max(dat$x, na.rm = T)
@@ -49,7 +57,7 @@ assessSpatialCov <- function (dat, res, logCount = FALSE, countries, shp = NULL,
   ymin <- min(dat$y, na.rm = T)
   
   ymax <- max(dat$y, na.rm = T)
-  
+
   rast <- raster::raster(ncol=length(seq(xmin, xmax, res)),
                          nrow=length(seq(ymin, ymax, res)),
                          xmn=xmin,
@@ -58,15 +66,29 @@ assessSpatialCov <- function (dat, res, logCount = FALSE, countries, shp = NULL,
                          ymx=ymax)
   
   for (i in unique(dat$identifier)) {
-    
+
     rasts <- lapply(X=unique(dat$Period), 
                     function(x) { data <- dat[dat$identifier == i & dat$Period == x, c("x", "y")]
-                    raster::rasterize(data, rast)})
-    
+                    
+                    if (nrow(data) >= 1) {
+                      
+                      raster::rasterize(data, rast)
+                      
+                    } else {
+                      
+                      r <- setValues(rast, NA)
+                      
+                      r
+                      
+                    }
+                    
+                    })
+                    
+
     names(rasts) <- unique(dat$Period)
-    
+
     rasts <- raster::stack(rasts)
-    
+
     if (logCount == TRUE) rasts <- log10(rasts)
     
     assign(paste0("rasts", i), rasts)
@@ -74,29 +96,70 @@ assessSpatialCov <- function (dat, res, logCount = FALSE, countries, shp = NULL,
   }
 
   leg <- ifelse(logCount == TRUE, "log10(n records)", "n records")
-
-  #map <- ifelse(is.null(shp), ggplot2::map_data("world", regions = countries), ggplot2::fortify(shp)) 
-
-  if (is.null(shp)) { map <- ggplot2::map_data("world", regions = countries) }
-  else { map <- ggplot2::fortify(shp)}
   
   myCol <- rgb(255,255,255, max = 255, alpha = 125, names = "blue50")
 
   ## add lapply to return multiple plots as a list
-  
-  out <- lapply(unique(dat$identifier),
-                function(x) {rasterVis::gplot(get(paste0("rasts", x))) + 
+
+  out <- lapply(as.character(unique(dat$identifier)),
+                function(x) {
+                  
+                  if (is.list(countries) & !any(!countries[[x]] %in% unique(ggplot2::map_data("world")$region)) |
+                      !is.list(countries) & !is.null(countries) & !any(!countries %in% unique(ggplot2::map_data("world")$region)) |
+                      !is.null(shp)) {
+                    
+                    if (is.null(shp)) { 
+                      
+                      if (is.list(countries)) {
+                        
+                        map <- ggplot2::map_data("world", regions = countries[[x]])
+                        
+                      } else {
+                        
+                        map <- ggplot2::map_data("world", regions = countries)
+                        
+                      }
+                      
+                    } else { 
+                      
+                      if (is.list(shp)) {
+                        
+                        map <- ggplot2::fortify(shp[[x]])
+                        
+                      } else {
+                        
+                        map <- ggplot2::fortify(shp)
+                        
+                      }
+                      
+                    }
+                    
+                  } else {
+                    
+                    map <- NULL
+                    
+                  }
+
+
+                  p <- rasterVis::gplot(get(paste0("rasts", x))) + 
                     ggplot2::geom_tile(ggplot2::aes(fill = value)) +
                     #ggplot2::geom_polygon(data = map, ggplot2::aes(x=long, y = lat, group = group),
                     #             colour="black",fill=myCol,
                     #             inherit.aes=F) +
-                    ggplot2::geom_path(data = map, 
-                                       ggplot2::aes(x = long, y = lat, group = group),
-                                       color = "black") +
+                    #ggplot2::geom_path(data = map, 
+                    #                   ggplot2::aes(x = long, y = lat, group = group),
+                    #                   color = "black") +
                     ggplot2::facet_wrap(~ variable) + 
                     ggplot2::theme_linedraw() +
                     ggplot2::scale_fill_gradient2(low = "red", high = "blue", na.value = myCol,
-                                                  name = leg)})
+                                                  name = leg)
+
+                  if (!is.null(map)) p <- p + ggplot2::geom_polygon(data = map, ggplot2::aes(x=long, y = lat, group = group),
+                                                                                 colour="black",fill=myCol,
+                                                                                 inherit.aes=F)
+                  return(p)
+                  
+                  })
   
   names(out) <- unique(dat$identifier)
 
