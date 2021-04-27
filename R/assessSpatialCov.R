@@ -104,7 +104,7 @@ assessSpatialCov <- function (dat, res, logCount = FALSE, countries = NULL, shp 
   out <- lapply(as.character(unique(dat$identifier)),
                 function(x) {
                   
-                  if (is.list(countries) & !any(!countries[[x]] %in% unique(ggplot2::map_data("world")$region)) |
+                  if (is.list(countries) & !any(!countries %in% unique(ggplot2::map_data("world")$region)) |
                       !is.list(countries) & !is.null(countries) & !any(!countries %in% unique(ggplot2::map_data("world")$region)) |
                       !is.null(shp)) {
                     
