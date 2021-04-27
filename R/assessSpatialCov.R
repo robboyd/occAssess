@@ -39,6 +39,14 @@ assessSpatialCov <- function (dat, res, logCount = FALSE, countries = NULL, shp 
     dat <- dat[-which(is.na(dat$year)), ]
     
   }
+  
+  if (any(!dat$year %in% unlist(periods))) {
+    
+    drop <- which(!dat$year %in% unlist(periods))
+    
+    dat <- dat[-drop, ]
+    
+  }
 
   dat <- dat[order(dat$year), ]
   
