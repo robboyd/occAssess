@@ -76,7 +76,7 @@ assessSpatialCov <- function (dat, res, logCount = FALSE, countries = NULL, shp 
                       
                     } else {
                       
-                      r <- setValues(rast, NA)
+                      r <- raster::setValues(rast, NA)
                       
                       r
                       
