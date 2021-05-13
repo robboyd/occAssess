@@ -11,7 +11,9 @@ assessSpatialCov(
   countries = NULL,
   shp = NULL,
   periods,
-  maxSpatUncertainty = NULL
+  maxSpatUncertainty = NULL,
+  output = "density",
+  minPeriods = NULL
 )
 }
 \arguments{
@@ -33,12 +35,17 @@ Do not specify both countries and dat.}
 \item{periods}{String. A list of time periods. For example, for two periods, the first spanning 1950 to 1990, and the second 1991 to 2019: periods = list(1950:1990, 1991:2019).}
 
 \item{maxSpatUncertainty}{Numeric. Maximum permitted spatial uncertainty. All records more uncertain than this value will be dropped. Units must match the units in your data.}
+
+\item{output}{String. Either "density" or "overlap". If density then the maps show the density of records (grid cell^-1) per period and level of identifier.
+If overlap then one map is returned per level of identifier showing which cells have been sampled in >= \code{minPeriods} periods.}
+
+\item{minPeriods}{Numeric. Lower limit of periods with sampling for cells to show up on the map. Defaults to NULL in which case only grid cells sampled in all \code{periods} are shown.}
 }
 \value{
-A list with n ggplot2 objects where n is the number of levels in the identifier field of dat.
+By default alist with n ggplot2 objects where n is the number of levels in the identifier field of dat. Where \code{output} = density return one map per level of identifier.
 }
 \description{
-This function grids occurrence data then maps it as counts per grid cell in geographic spece. .
+This function grids and then maps species occurrence data.
 }
 \seealso{
 \code{\link{assessSpatialBias}} which gives a measure of how far your data eviates from a random distribution in space.
