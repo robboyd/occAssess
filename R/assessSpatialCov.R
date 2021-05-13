@@ -1,6 +1,6 @@
 #' \code{assessSpatialCov}
 #'
-#' This function grids occurrence data then maps it as counts per grid cell in geographic spece. .
+#' This function grids and then maps species occurrence data.
 #' @param dat string. A data.frame containing columns species (species name), x (x coordinate), y (y coordinate), year, spatialUncertainty and identifier. 
 #' @param periods String. A list of time periods. For example, for two periods, the first spanning 1950 to 1990, and the second 1991 to 2019: periods = list(1950:1990, 1991:2019).
 #' @param res Numeric. Spatial resolution at which to grid the occurrence data.
@@ -13,13 +13,26 @@
 #'            if the levels in identifier denote spatial subsets of the data, then shp may be provided as a list, with the name of each element corresponding to one level of the identifier field in dat. 
 #'            Do not specify both countries and dat.
 #' @param maxSpatUncertainty Numeric. Maximum permitted spatial uncertainty. All records more uncertain than this value will be dropped. Units must match the units in your data.
-#' @return A list with n ggplot2 objects where n is the number of levels in the identifier field of dat.
+#' @param output String. Either "density" or "overlap". If density then the maps show the density of records (grid cell^-1) per period and level of identifier. 
+#'               If overlap then one map is returned per level of identifier showing which cells have been sampled in >= \code{minPeriods} periods.
+#' @param minPeriods Numeric. Lower limit of periods with sampling for cells to show up on the map. Defaults to NULL in which case only grid cells sampled in all \code{periods} are shown. 
+#' @return By default alist with n ggplot2 objects where n is the number of levels in the identifier field of dat. Where \code{output} = density return one map per level of identifier.
 #' @seealso \code{\link{assessSpatialBias}} which gives a measure of how far your data eviates from a random distribution in space. 
 #' @importFrom rasterVis gplot
 #' @export
 
-assessSpatialCov <- function (dat, res, logCount = FALSE, countries = NULL, shp = NULL, periods, maxSpatUncertainty = NULL) {
+assessSpatialCov <- function(dat, 
+                             res, 
+                             logCount = FALSE, 
+                             countries = NULL, 
+                             shp = NULL, 
+                             periods, 
+                             maxSpatUncertainty = NULL,
+                             output = "density",
+                             minPeriods = NULL) {
 
+  if (!output %in% c("density", "overlap")) stop("Output must be one of density or overlap")
+  
   if (is.list(countries) | is.list(shp)) print("You have specified shp or countries as a list object; this should only be the case if your identifier field denotes spatial subsets of your data.")
   
   if (!is.null(shp) & !is.null(countries)) stop("Only one of countries and shp may be specified; they do the same thing. If you are working on WGS84 it is recommended that you use countries; otherwise, you cannot use countries and should use shp.")
@@ -98,12 +111,36 @@ assessSpatialCov <- function (dat, res, logCount = FALSE, countries = NULL, shp 
     rasts <- raster::stack(rasts)
 
     if (logCount == TRUE) rasts <- log10(rasts)
-    
-    assign(paste0("rasts", i), rasts)
+
+    if (output == "density") {
+      
+      assign(paste0("rasts", i), rasts)
+      
+    } else {
+
+      if (is.null(minPeriods)) minPeriods <- length(unique(dat$Period))
+
+      rasts <- sum(as.logical(rasts), na.rm = T)
+
+      rasts[rasts < minPeriods] <- NA
+      
+      assign(paste0("rasts", i), as.logical(rasts))
+      
+    }
     
   }
 
-  leg <- ifelse(logCount == TRUE, "log10(n records)", "n records")
+  if (output == "overlap") {
+    
+    leg <- "sampled in minPeriods
+    periods"
+    
+  } else {
+    
+    leg <- ifelse(logCount == TRUE, "log10(n records)", "n records")
+    
+  }
+  
   
   myCol <- rgb(255,255,255, max = 255, alpha = 125, names = "blue50")
 
@@ -144,23 +181,31 @@ assessSpatialCov <- function (dat, res, logCount = FALSE, countries = NULL, shp 
                     
                   } else {
                     
+                    warning("Some or all country names provided are not in unique(ggplot2::map_data(world)$region)")
+                    
                     map <- NULL
                     
                   }
 
 
-                  p <- rasterVis::gplot(get(paste0("rasts", x))) + 
-                    ggplot2::geom_tile(ggplot2::aes(fill = value)) +
-                    #ggplot2::geom_polygon(data = map, ggplot2::aes(x=long, y = lat, group = group),
-                    #             colour="black",fill=myCol,
-                    #             inherit.aes=F) +
-                    #ggplot2::geom_path(data = map, 
-                    #                   ggplot2::aes(x = long, y = lat, group = group),
-                    #                   color = "black") +
-                    ggplot2::facet_wrap(~ variable) + 
-                    ggplot2::theme_linedraw() +
-                    ggplot2::scale_fill_gradient2(low = "red", high = "blue", na.value = myCol,
-                                                  name = leg)
+                  p <- rasterVis::gplot(get(paste0("rasts", x))) +
+                    theme_linedraw()
+                  
+                  if (output == "density") {
+                    
+                    p <- p + ggplot2::geom_tile(ggplot2::aes(fill = value)) +
+                      ggplot2::facet_wrap(~ variable) + 
+                      ggplot2::scale_fill_gradient2(low = "red", high = "blue", na.value = myCol,
+                                                    name = leg)
+                    
+                  } else {
+                    
+                    p <- p + ggplot2::geom_tile(ggplot2::aes(fill = factor(value))) +
+                      ggplot2::scale_fill_manual(values = "blue", na.value = myCol) +
+                      ggplot2::theme(legend.position = "none") +
+                      ggplot2::ggtitle(x)
+                    
+                  }
 
                   if (!is.null(map)) p <- p + ggplot2::geom_polygon(data = map, ggplot2::aes(x=long, y = lat, group = group),
                                                                                  colour="black",fill=myCol,
