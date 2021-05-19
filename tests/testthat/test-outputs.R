@@ -26,9 +26,15 @@ test_that("check outputs are as expected", {
   
   expect_equal( length(assessSpatialCov(dat = random40Species, res = 20000, periods = periods, output = "overlap")), 2)
   
-  expect_true( is.list(assessSpatialCov(dat = random40Species, res = 20000, periods = periods)))
+  expect_true( is.list(assessSpatialCov(dat = random40Species, res = 20000, periods = periods, countries = "UK")))
   
-  expect_true( length(assessSpatialCov(dat = random40Species, res = 20000, periods = periods)) == 2)
+  expect_true( length(assessSpatialCov(dat = random40Species, res = 20000, periods = periods, countries = "UK")) == 2)
+  
+  expect_true( length(assessSpatialCov(dat = random40Species, 
+                                       res = 20000, 
+                                       periods = periods,
+                                       output = "nPeriods",
+                                       countries = "UK")) == 2)
   
 })
 

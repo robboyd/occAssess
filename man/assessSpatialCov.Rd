@@ -36,10 +36,12 @@ Do not specify both countries and dat.}
 
 \item{maxSpatUncertainty}{Numeric. Maximum permitted spatial uncertainty. All records more uncertain than this value will be dropped. Units must match the units in your data.}
 
-\item{output}{String. Either "density" or "overlap". If density then the maps show the density of records (grid cell^-1) per period and level of identifier.
-If overlap then one map is returned per level of identifier showing which cells have been sampled in >= \code{minPeriods} periods.}
+\item{output}{String. Either "density", "overlap" or "nPeriods". If density then the maps show the density of records (grid cell^-1) per period and level of identifier.
+If overlap then one map is returned per level of identifier showing which cells have been sampled in >= \code{minPeriods} periods.
+If nPeriods then one map is returned per level of identifier showing the number of periods in which each grid cell has been sampled.}
 
-\item{minPeriods}{Numeric. Lower limit of periods with sampling for cells to show up on the map. Defaults to NULL in which case only grid cells sampled in all \code{periods} are shown.}
+\item{minPeriods}{Numeric. Lower limit of periods with sampling for cells to show up on the map. Defaults to NULL in which case only grid cells sampled in all \code{periods} are shown. This argument
+only applies if \code{output} = "overlap".}
 }
 \value{
 By default alist with n ggplot2 objects where n is the number of levels in the identifier field of dat. Where \code{output} = density return one map per level of identifier.

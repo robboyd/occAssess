@@ -13,9 +13,11 @@
 #'            if the levels in identifier denote spatial subsets of the data, then shp may be provided as a list, with the name of each element corresponding to one level of the identifier field in dat. 
 #'            Do not specify both countries and dat.
 #' @param maxSpatUncertainty Numeric. Maximum permitted spatial uncertainty. All records more uncertain than this value will be dropped. Units must match the units in your data.
-#' @param output String. Either "density" or "overlap". If density then the maps show the density of records (grid cell^-1) per period and level of identifier. 
+#' @param output String. Either "density", "overlap" or "nPeriods". If density then the maps show the density of records (grid cell^-1) per period and level of identifier. 
 #'               If overlap then one map is returned per level of identifier showing which cells have been sampled in >= \code{minPeriods} periods.
-#' @param minPeriods Numeric. Lower limit of periods with sampling for cells to show up on the map. Defaults to NULL in which case only grid cells sampled in all \code{periods} are shown. 
+#'               If nPeriods then one map is returned per level of identifier showing the number of periods in which each grid cell has been sampled.
+#' @param minPeriods Numeric. Lower limit of periods with sampling for cells to show up on the map. Defaults to NULL in which case only grid cells sampled in all \code{periods} are shown. This argument
+#'                   only applies if \code{output} = "overlap".
 #' @return By default alist with n ggplot2 objects where n is the number of levels in the identifier field of dat. Where \code{output} = density return one map per level of identifier.
 #' @seealso \code{\link{assessSpatialBias}} which gives a measure of how far your data eviates from a random distribution in space. 
 #' @importFrom rasterVis gplot
@@ -31,7 +33,7 @@ assessSpatialCov <- function(dat,
                              output = "density",
                              minPeriods = NULL) {
 
-  if (!output %in% c("density", "overlap")) stop("Output must be one of density or overlap")
+  if (!output %in% c("density", "overlap", "nPeriods")) stop("Output must be one of density, overlap or nPeriods")
   
   if (is.list(countries) | is.list(shp)) print("You have specified shp or countries as a list object; this should only be the case if your identifier field denotes spatial subsets of your data.")
   
@@ -116,6 +118,14 @@ assessSpatialCov <- function(dat,
       
       assign(paste0("rasts", i), rasts)
       
+    } else if (output == "nPeriods") {
+      
+      rasts <- sum(as.logical(rasts), na.rm = T)
+      
+      rasts[rasts == 0] <- NA
+      
+      assign(paste0("rasts", i), rasts)
+      
     } else {
 
       if (is.null(minPeriods)) minPeriods <- length(unique(dat$Period))
@@ -135,9 +145,13 @@ assessSpatialCov <- function(dat,
     leg <- "sampled in minPeriods
     periods"
     
-  } else {
+  } else if (output == "density") {
     
     leg <- ifelse(logCount == TRUE, "log10(n records)", "n records")
+    
+  } else {
+    
+    leg <- "Number of periods sampled"
     
   }
   
@@ -200,10 +214,15 @@ assessSpatialCov <- function(dat,
                     
                   } else {
                     
+                    n <- length(unique(getValues(get(paste0("rasts", x)))))
+                    
                     p <- p + ggplot2::geom_tile(ggplot2::aes(fill = factor(value))) +
-                      ggplot2::scale_fill_manual(values = "blue", na.value = myCol) +
-                      ggplot2::theme(legend.position = "none") +
+                      ggplot2::scale_fill_manual(values = terrain.colors(n, rev = TRUE), 
+                                                 na.value = myCol, name = leg,
+                                                 na.translate = FALSE) +
                       ggplot2::ggtitle(x)
+                  
+                    if (output == "overlap") p <- p + ggplot2::theme(legend.position = "none") 
                     
                   }
 
