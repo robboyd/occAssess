@@ -3,7 +3,7 @@
 language: R
 cache: packages
 
-packages:
+r_packages:
  - ggplot2
  - rasterVis
  - terra
