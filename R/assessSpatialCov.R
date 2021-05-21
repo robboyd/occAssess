@@ -203,7 +203,7 @@ assessSpatialCov <- function(dat,
 
 
                   p <- rasterVis::gplot(get(paste0("rasts", x))) +
-                    theme_linedraw()
+                    ggplot2::theme_linedraw()
                   
                   if (output == "density") {
                     
