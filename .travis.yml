@@ -3,9 +3,7 @@
 language: R
 cache: packages
 
-addons:
- apt:
-   packages:
-     - ggplot2
-     - rasterVis
-     - terra
+packages:
+ - ggplot2
+ - rasterVis
+ - terra
