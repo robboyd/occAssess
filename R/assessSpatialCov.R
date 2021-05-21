@@ -214,7 +214,7 @@ assessSpatialCov <- function(dat,
                     
                   } else {
                     
-                    n <- length(unique(getValues(get(paste0("rasts", x)))))
+                    n <- length(unique(raster::getValues(get(paste0("rasts", x)))))
                     
                     p <- p + ggplot2::geom_tile(ggplot2::aes(fill = factor(value))) +
                       ggplot2::scale_fill_manual(values = terrain.colors(n, rev = TRUE), 

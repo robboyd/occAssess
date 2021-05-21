@@ -9,7 +9,7 @@ test_that("check basic errors are caught", {
   
   data("UKWGS84mask")
   
-  mask <- stack(UKWGS84mask, UKWGS84mask)
+  mask <- raster::stack(UKWGS84mask, UKWGS84mask)
   
   periods <- list(2000:2004, 2005:2010)
   
