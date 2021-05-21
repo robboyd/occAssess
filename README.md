@@ -1,3 +1,7 @@
+<!-- badges: start -->
+  [![Travis build status](https://travis-ci.com/robboyd/occAssess.svg?branch=master)](https://travis-ci.com/robboyd/occAssess)
+  <!-- badges: end -->
+
 ```r
 if (!"occAssess" %in% installed.packages()) devtools::install_github("https://github.com/robboyd/occAssess")
 library(occAssess)
@@ -242,6 +246,4 @@ assessEnvBias(dat = spDat,
 ```
 
 ![plot of chunk unnamed-chunk-12](/vignettes/unnamed-chunk-12-1.png)
-<!-- badges: start -->
-  [![Travis build status](https://travis-ci.com/robboyd/occAssess.svg?branch=master)](https://travis-ci.com/robboyd/occAssess)
-  <!-- badges: end -->
+
