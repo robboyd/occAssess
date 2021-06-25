@@ -48,7 +48,7 @@ str(spDat)
 
 #### Periods
 
-In addition to your occurrence data, you must also provide a number of periods into which your data will be split (thi can be one period covering e.g. your whole study extent). In this example I will split the data into (roughly) decades over the period 1950 to 2019. Periods are defined as follows:
+In addition to your occurrence data, you must also provide a number of periods into which your data will be split (thi can be one period covering e.g., your whole study extent). In this example I will split the data into (roughly) decades over the period 1950 to 2019. Periods are defined as follows:
 
 
 ```r
