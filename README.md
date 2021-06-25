@@ -10,7 +10,8 @@ library(occAssess)
 NB some users have reported problems installing occAssess when using older versions of R. If you have trouble then please try
 
 ```r
-devtools::install_github("https://github.com/robboyd/occAssess", ref = "main")
+withr::with_envvar(c(R_REMOTES_NO_ERRORS_FROM_WARNINGS = "true")
+devtools::install_github("https://github.com/robboyd/occAssess")
 ```
 
 # Introduction
