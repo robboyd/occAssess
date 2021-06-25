@@ -7,6 +7,12 @@ if (!"occAssess" %in% installed.packages()) devtools::install_github("https://gi
 library(occAssess)
 ```
 
+NB some users have reported problems installing occAssess when using older versions of R. If you have trouble then please try
+
+```r
+devtools::install_github("https://github.com/robboyd/occAssess", ref = "main")
+```
+
 # Introduction
 
 # What does occAssess do? 
