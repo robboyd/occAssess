@@ -36,6 +36,13 @@ test_that("check outputs are as expected", {
                                        output = "nPeriods",
                                        countries = "UK")) == 2)
   
+  expect_equal( assessEnvBias(dat = random40Species,
+                periods = periods,
+                envDat = random40SpeciesEnvDat,
+                backgroundEnvDat = backgroundEnvDat,
+                xPC = 1,
+                yPC = 2)[[1]]$scores.PC1[1], 577.8804)
+  
 })
 
 

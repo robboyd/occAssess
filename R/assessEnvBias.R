@@ -8,7 +8,7 @@
 #' @param xPC Numeric. Which principal component to use as the x axis.
 #' @param yPC Numeric. As xPC but for the y axis. 
 #' @param maxSpatUncertainty Numeric. Maximum permitted spatial uncertainty. All records more uncertain than this value will be dropped. Units must match the units in your data.
-#' @return a ggplot2 object with separate panels for each level of identifier in dat.
+#' @return a list with two entries: 1) the PCA results with columns for period, identifier, scores.PC1,.. scores.PCn, xVar (proportion of variance explained by xPC) and yVar (as xVar but for yPC). 
 #' @export
 
 assessEnvBias <- function(dat,
@@ -18,13 +18,13 @@ assessEnvBias <- function(dat,
                           xPC = 1,
                           yPC = 2,
                           maxSpatUncertainty = NULL) {
-
+  
   if (any(!(c("species", "x", "y", "year", "spatialUncertainty", "identifier") %in% colnames(dat)))) stop("Data must includes columns for species, x, y, year, spatialUncertainty and identifier")
   
   if (any(is.na(dat$identifier))) stop("One or more NAs in the identifier field. NAs are not permitted.")
   
   if (nrow(envDat) != nrow(dat)) stop("nrow of environmental data does not equal nrow of species occurrence data.")
-
+  
   if (xPC > ncol(envDat) | yPC > ncol(envDat)) stop("You have chosen a principal component that doesn't exist for one of the x or y axes")
   
   if (!is.null(maxSpatUncertainty)) dat <- dat[!is.na(dat$spatialUncertainty) & dat$spatialUncertainty <= maxSpatUncertainty, ]
@@ -36,7 +36,7 @@ assessEnvBias <- function(dat,
   dat <- cbind(dat, envDat)
   
   envCols <- ((ncol(dat) - ncol(envDat)) + 1):ncol(dat)
-
+  
   if (any(is.na(dat$year))) {
     
     warning("Removing data without a specified year")
@@ -44,9 +44,9 @@ assessEnvBias <- function(dat,
     dat <- dat[-which(is.na(dat$year)), ]
     
   }
-
+  
   if (any(is.na(dat[, envCols[1]]))) dat <- dat[-which(is.na(dat[, envCols[1]])), ]
-
+  
   dat <- dat[order(dat$year), ]
   
   if (any(!dat$year %in% unlist(periods))) {
@@ -64,21 +64,23 @@ assessEnvBias <- function(dat,
     dat$Period <- ifelse(dat$year %in% periods[[i]], paste0("p", i), dat$Period)
     
   }
-
+  
   if (is.null(backgroundEnvDat)) {
     
     plotDat <- lapply(unique(dat$identifier),
-                  function(x) { 
-                    pca <- stats::prcomp(dat[dat$identifier == x, envCols])
-                    scores <- pca$x
-                    data.frame(Period = dat$Period[dat$identifier == x],
-                             identifier = x,
-                             scores = scores)})
+                      function(x) { 
+                        pca <- stats::prcomp(dat[dat$identifier == x, envCols])
+                        scores <- pca$x
+                        data.frame(Period = dat$Period[dat$identifier == x],
+                                   identifier = x,
+                                   scores = scores,
+                                   xVar = summary(pca)$importance[2,xPC] * 100,
+                                   yVar = summary(pca)$importance[2,yPC] * 100)})
     
     plotDat <- do.call("rbind", plotDat)
-
+    
   } else {
-
+    
     plotDat <- lapply(unique(dat$identifier),
                       function(x) { 
                         pca <- stats::prcomp(backgroundEnvDat)
@@ -86,20 +88,23 @@ assessEnvBias <- function(dat,
                         scores <- rbind(pca2, pca$x)
                         data.frame(Period = c(dat$Period[dat$identifier == x], rep("background", nrow(backgroundEnvDat))),
                                    identifier = x,
-                                   scores = scores)})
+                                   scores = scores,
+                                   xVar = summary(pca)$importance[2,xPC] * 100,
+                                   yVar = summary(pca)$importance[2,xPC] * 100)})
     
     plotDat <- do.call("rbind", plotDat)
     
   }
-
+  
   p <- ggplot2::ggplot(data = plotDat, ggplot2::aes(x = plotDat[, (2 + xPC)], y = plotDat[, (2+yPC)], colour = Period, group = Period)) + 
     ggplot2::stat_ellipse(type = "norm") +
     ggplot2::facet_wrap(~identifier) +
-    ggplot2::labs(x = paste0("PC", xPC),
-         y = paste0("PC", yPC)) +
+    ggplot2::labs(x = paste0("PC", xPC, " (", plotDat$xVar[1], "%)"),
+                  y = paste0("PC", yPC, " (", plotDat$yVar[1], "%)")) +
     ggplot2::theme_linedraw()
-
-  return(p)
-
+  
+  return(list(data = plotDat,
+              plot = p))
+  
 }
 
