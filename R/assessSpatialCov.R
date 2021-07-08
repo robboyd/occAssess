@@ -1,7 +1,13 @@
 #' \code{assessSpatialCov}
 #'
 #' This function grids and then maps species occurrence data.
-#' @param dat string. A data.frame containing columns species (species name), x (x coordinate), y (y coordinate), year, spatialUncertainty and identifier. 
+#' @param dat string. A data.frame containing columns for species name, x coordinates, y coordinates, spatialUncertainty, year and an identifier (used to group the data - heuristic will be calculated for each group). 
+#' @param species Character string. column name in dat giving species names.
+#' @param x string. Column name in dat giving x coordinates. Any coordinate and spatial reference systems are permitted.
+#' @param y string. Column name in dat giving y coordinates. Any coordinate and spatial reference systems are permitted.
+#' @param year string. Column name in dat giving years.
+#' @param spatialUncertainty String. Column name in dat giving uncertainty associated with x and y. Any units are permitted. 
+#' @param identifier String. Column name in dat giving record "identifiers". Identifiers are used to group the data; heuristics will be calculated separately for each group.
 #' @param periods String. A list of time periods. For example, for two periods, the first spanning 1950 to 1990, and the second 1991 to 2019: periods = list(1950:1990, 1991:2019).
 #' @param res Numeric. Spatial resolution at which to grid the occurrence data.
 #' @param logCount Logical. Whether to log transform counts for visual purposes. Useful where there is large variation in counts across cells. 
@@ -23,7 +29,13 @@
 #' @importFrom rasterVis gplot
 #' @export
 
-assessSpatialCov <- function(dat, 
+assessSpatialCov <- function(dat,
+                             species,
+                             x,
+                             y,
+                             year,
+                             spatialUncertainty,
+                             identifier,
                              res, 
                              logCount = FALSE, 
                              countries = NULL, 
@@ -33,13 +45,19 @@ assessSpatialCov <- function(dat,
                              output = "density",
                              minPeriods = NULL) {
 
-  if (!output %in% c("density", "overlap", "nPeriods")) stop("Output must be one of density, overlap or nPeriods")
+  if (any(!(c(species, x, y, year, spatialUncertainty, identifier) %in% colnames(dat)))) stop("You have specified columns that don't exist in dat.")
+  
+  dat <- createData(data = dat,
+                    species,
+                    x,
+                    y,
+                    year,
+                    spatialUncertainty,
+                    identifier)
   
   if (is.list(countries) | is.list(shp)) print("You have specified shp or countries as a list object; this should only be the case if your identifier field denotes spatial subsets of your data.")
   
   if (!is.null(shp) & !is.null(countries)) stop("Only one of countries and shp may be specified; they do the same thing. If you are working on WGS84 it is recommended that you use countries; otherwise, you cannot use countries and should use shp.")
-  
-  if (any(!(c("species", "x", "y", "year", "spatialUncertainty", "identifier") %in% colnames(dat)))) stop("Data must includes columns for species, x, y, year, spatialUncertainty and identifier")
   
   if (any(is.na(dat$identifier))) stop("One or more NAs in the identifier field. NAs are not permitted.")
   
