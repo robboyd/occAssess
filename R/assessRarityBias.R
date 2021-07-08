@@ -4,7 +4,13 @@
 #' the number of grid cells with records (proxy for range size) on the number of records. It uses the r2 value from these regressions
 #' as an index proportionality between the two measures. A lower r2 indicates lower proportionality between range size and the number of records relative
 #' to a higher score. Note that an index will not be calculated for any period/ identifier combination with fewer than 5 species. In these cases the regressions on which the indices are based are likely meaningless.
-#' @param dat string. A data.frame containing columns species (species name), x (x coordinate), y (y coordinate), year, spatialUncertainty and identifier. 
+#' @param dat string. A data.frame containing columns for species name, x coordinates, y coordinates, spatialUncertainty, year and an identifier (used to group the data - heuristic will be calculated for each group). 
+#' @param species Character string. column name in dat giving species names.
+#' @param x string. Column name in dat giving x coordinates. Any coordinate and spatial reference systems are permitted.
+#' @param y string. Column name in dat giving y coordinates. Any coordinate and spatial reference systems are permitted.
+#' @param year string. Column name in dat giving years.
+#' @param spatialUncertainty String. Column name in dat giving uncertainty associated with x and y. Any units are permitted. 
+#' @param identifier String. Column name in dat giving record "identifiers". Identifiers are used to group the data; heuristics will be calculated separately for each group.
 #' @param periods String. A list of time periods. For example, for two periods, the first spanning 1950 to 1990, and the second 1991 to 2019: periods = list(1950:1990, 1991:2019).
 #' @param res Numeric. Spatial resolution at which to grid the data for estimation of range size.
 #' @return A list with two elements: a ggplot2 object and the data underpinning the plot.
@@ -13,9 +19,27 @@
 #' @export
 #' 
 
-assessRarityBias <- function(dat, periods, res, prevPerPeriod, maxSpatUncertainty = NULL) {
-
-  if (any(!(c("species", "x", "y", "year", "spatialUncertainty", "identifier") %in% colnames(dat)))) stop("Data must includes columns for species, x, y, year, spatialUncertainty and identifier")
+assessRarityBias <- function(dat,
+                             species,
+                             x,
+                             y,
+                             year,
+                             spatialUncertainty,
+                             identifier,
+                             periods, 
+                             res, 
+                             prevPerPeriod, 
+                             maxSpatUncertainty = NULL) {
+  
+  if (any(!(c(species, x, y, year, spatialUncertainty, identifier) %in% colnames(dat)))) stop("You have specified columns that don't exist in dat.")
+  
+  dat <- createData(data = dat,
+                    species,
+                    x,
+                    y,
+                    year,
+                    spatialUncertainty,
+                    identifier)
   
   if (any(is.na(dat$identifier))) stop("One or more NAs in the identifier field. NAs are not permitted.")
   

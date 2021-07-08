@@ -6,7 +6,13 @@
 #' over, which should be larger where there are fewer data. This is because the random samples are generated in equal number to
 #' the data. Where the number of samples is > 1, the estimates come with a measures of uncertainty (5th and 95th percentiles). 
 #' The index is calculated for each of n user-specified time periods.
-#' @param dat string. A data.frame containing columns species (species name), x (x coordinate), y (y coordinate), year, spatialUncertainty and identifier. 
+#' @param dat string. A data.frame containing columns for species name, x coordinates, y coordinates, spatialUncertainty, year and an identifier (used to group the data - heuristic will be calculated for each group). 
+#' @param species Character string. column name in dat giving species names.
+#' @param x string. Column name in dat giving x coordinates. Any coordinate and spatial reference systems are permitted.
+#' @param y string. Column name in dat giving y coordinates. Any coordinate and spatial reference systems are permitted.
+#' @param year string. Column name in dat giving years.
+#' @param spatialUncertainty String. Column name in dat giving uncertainty associated with x and y. Any units are permitted. 
+#' @param identifier String. Column name in dat giving record "identifiers". Identifiers are used to group the data; heuristics will be calculated separately for each group.
 #' @param periods Numeric. A list of time periods. For example, for two periods, the first spanning 1950 to 1990, and the second 1991 to 2019: periods = list(1950:1990, 1991:2019).
 #' @param nSamps Logical. How many iterations of random samples to use for comparison of empirical NN index with random NN index.
 #' @param mask String. A raster object used to indicate the study region over which the random distribution should be generated. In most cases this will be a single raster layer. However, where the identifier 
@@ -21,10 +27,29 @@
 #' @return A list with two elements: a ggplot2 object and the data underpinning the plot.
 #' @export
 
-assessSpatialBias <- function(dat, periods, mask, nSamps = 50, degrade = TRUE, maxSpatUncertainty = NULL) {
+assessSpatialBias <- function(dat, 
+                              species,
+                              x,
+                              y,
+                              year,
+                              spatialUncertainty,
+                              identifier,
+                              periods, 
+                              mask, 
+                              nSamps = 50, 
+                              degrade = TRUE, 
+                              maxSpatUncertainty = NULL) {
   
-  if (any(!(c("species", "x", "y", "year", "spatialUncertainty", "identifier") %in% colnames(dat)))) stop("Data must includes columns for species, x, y, year, spatialUncertainty and identifier")
-    
+  if (any(!(c(species, x, y, year, spatialUncertainty, identifier) %in% colnames(dat)))) stop("You have specified columns that don't exist in dat.")
+  
+  dat <- createData(data = dat,
+                    species,
+                    x,
+                    y,
+                    year,
+                    spatialUncertainty,
+                    identifier)  
+  
   if (any(is.na(dat$identifier))) stop("One or more NAs in the identifier field. NAs are not permitted.")
   
   if (!is.null(maxSpatUncertainty)) dat <- dat[!is.na(dat$spatialUncertainty) & dat$spatialUncertainty <= maxSpatUncertainty, ]
