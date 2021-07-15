@@ -6,6 +6,12 @@
 \usage{
 assessEnvBias(
   dat,
+  species,
+  x,
+  y,
+  spatialUncertainty,
+  year,
+  identifier,
   periods,
   envDat,
   backgroundEnvDat = NULL,
@@ -15,7 +21,19 @@ assessEnvBias(
 )
 }
 \arguments{
-\item{dat}{string. A data.frame containing columns for species name (species), x and y coordinates (x, y), spatialUncertainty, year and uncertainty.}
+\item{dat}{string. A data.frame containing columns for species name, x coordinates, y coordinates, spatialUncertainty, year and an identifier (used to group the data - heuristic will be calculated for each group).}
+
+\item{species}{Character string. column name in dat giving species names.}
+
+\item{x}{string. Column name in dat giving x coordinates. Any coordinate and spatial reference systems are permitted.}
+
+\item{y}{string. Column name in dat giving y coordinates. Any coordinate and spatial reference systems are permitted.}
+
+\item{spatialUncertainty}{String. Column name in dat giving uncertainty associated with x and y. Any units are permitted.}
+
+\item{year}{string. Column name in dat giving years.}
+
+\item{identifier}{String. Column name in dat giving record "identifiers". Identifiers are used to group the data; heuristics will be calculated separately for each group.}
 
 \item{periods}{String. A list of time periods. For example, for two periods, the first spanning 1950 to 1990, and the second 1991 to 2019: periods = list(1950:1990, 1991:2019).}
 
@@ -30,7 +48,7 @@ assessEnvBias(
 \item{maxSpatUncertainty}{Numeric. Maximum permitted spatial uncertainty. All records more uncertain than this value will be dropped. Units must match the units in your data.}
 }
 \value{
-a ggplot2 object with separate panels for each level of identifier in dat.
+a list with two entries: 1) the PCA results with columns for period, identifier, scores.PC1,.. scores.PCn, xVar (proportion of variance explained by xPC) and yVar (as xVar but for yPC); and 2) the PCA plots.
 }
 \description{
 This function plots the distribution of your data in environmental space. To do this it uses a principal component analysis to reduce your environmental data to two dimensions for visualization.

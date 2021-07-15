@@ -4,10 +4,33 @@
 \alias{assessSpeciesID}
 \title{\code{assessSpeciesID}}
 \usage{
-assessSpeciesID(dat, periods, type, maxSpatUncertainty = NULL)
+assessSpeciesID(
+  dat,
+  species,
+  x,
+  y,
+  year,
+  spatialUncertainty,
+  identifier,
+  periods,
+  type,
+  maxSpatUncertainty = NULL
+)
 }
 \arguments{
-\item{dat}{string. A data.frame containing columns species (species name), x (x coordinate), y (y coordinate), year, spatialUncertainty and identifier.}
+\item{dat}{string. A data.frame containing columns for species name, x coordinates, y coordinates, spatialUncertainty, year and an identifier (used to group the data - heuristic will be calculated for each group).}
+
+\item{species}{Character string. column name in dat giving species names.}
+
+\item{x}{string. Column name in dat giving x coordinates. Any coordinate and spatial reference systems are permitted.}
+
+\item{y}{string. Column name in dat giving y coordinates. Any coordinate and spatial reference systems are permitted.}
+
+\item{year}{string. Column name in dat giving years.}
+
+\item{spatialUncertainty}{String. Column name in dat giving uncertainty associated with x and y. Any units are permitted.}
+
+\item{identifier}{String. Column name in dat giving record "identifiers". Identifiers are used to group the data; heuristics will be calculated separately for each group.}
 
 \item{periods}{String. A list of time periods. For example, for two periods, the first spanning 1950 to 1990, and the second 1991 to 2019: periods = list(1950:1990, 1991:2019).}
 
