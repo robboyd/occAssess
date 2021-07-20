@@ -16,6 +16,8 @@
 #' @return A list with two elements: a ggplot2 object and the data underpinning the plot.
 #' @param prevPerPeriod Logical. If TRUE then prevalence (number of grid cells with data) is calculated per period and if FALSE then prevalence is calculated over all periods.
 #' @param maxSpatUncertainty Numeric. Maximum permitted spatial uncertainty. All records more uncertain than this value will be dropped. Units must match the units in your data.
+#' @param metric String. One of "r2" (coefficient of variation) or "cor" (Pearson's correlation coefficient). Two ways of summarising the linear regressions of sample size on recorded range size. 
+#'               Note that, for large sample size, use of "cor" is more computationally demanding than "r2".
 #' @export
 #' 
 
@@ -29,9 +31,12 @@ assessRarityBias <- function(dat,
                              periods, 
                              res, 
                              prevPerPeriod, 
-                             maxSpatUncertainty = NULL) {
+                             maxSpatUncertainty = NULL,
+                             metric = "r2") {
   
   if (any(!(c(species, x, y, year, spatialUncertainty, identifier) %in% colnames(dat)))) stop("You have specified columns that don't exist in dat.")
+  
+  if (metric != "r2" & metric != "cor") stop("metric must be one of r2 or cor")
   
   dat <- createData(data = dat,
                     species,
@@ -130,7 +135,16 @@ assessRarityBias <- function(dat,
                     
                     stats <- do.call("rbind", stats)
 
-                    mod <- summary(stats::lm(stats$recs ~ stats$cells))$r.squared
+                    if(metric == "r2") {
+                      
+                      mod <- summary(stats::lm(stats$recs ~ stats$cells))$r.squared
+                      
+                    } else {
+                      
+                      mod <- cor(stats$recs, stats$cells)
+                      
+                    }
+                    
                     
                   } else {
                     

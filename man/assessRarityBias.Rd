@@ -15,7 +15,8 @@ assessRarityBias(
   periods,
   res,
   prevPerPeriod,
-  maxSpatUncertainty = NULL
+  maxSpatUncertainty = NULL,
+  metric = "r2"
 )
 }
 \arguments{
@@ -40,6 +41,9 @@ assessRarityBias(
 \item{prevPerPeriod}{Logical. If TRUE then prevalence (number of grid cells with data) is calculated per period and if FALSE then prevalence is calculated over all periods.}
 
 \item{maxSpatUncertainty}{Numeric. Maximum permitted spatial uncertainty. All records more uncertain than this value will be dropped. Units must match the units in your data.}
+
+\item{metric}{String. One of "r2" (coefficient of variation) or "cor" (Pearson's correlation coefficient). Two ways of summarising the linear regressions of sample size on recorded range size.
+Note that, for large sample size, use of "cor" is more computationally demanding than "r2".}
 }
 \value{
 A list with two elements: a ggplot2 object and the data underpinning the plot.
