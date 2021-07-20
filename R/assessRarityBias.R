@@ -66,11 +66,9 @@ assessRarityBias <- function(dat,
   
   for (i in 1: length(periods)) {
     
-    dat$Period <- ifelse(dat$year %in% periods[[i]], paste0("p", i), dat$Period)
+    dat$Period <- ifelse(dat$year %in% periods[[i]], i, dat$Period)
     
   }
-  
-  Ps <- paste0("p", 1:length(periods))
 
   if (any(is.na(dat$year))) {
     
@@ -106,7 +104,7 @@ assessRarityBias <- function(dat,
 
   for (i in unique(dat$identifier)) {
 
-    x <- lapply(Ps,
+    x <- lapply(1:length(periods),
                 function(y) {
 
                   spp <- unique(dat$species[dat$Period == y & dat$identifier == i])
@@ -173,7 +171,7 @@ assessRarityBias <- function(dat,
     ggplot2::theme_linedraw() +
     ggplot2::geom_point() +
     ggplot2::geom_line() + 
-    ggplot2::xlab("") +
+    ggplot2::xlab("Period") +
     ggplot2::ylab("Taxonomic bias index") +
     ggplot2::labs(colour = "")
   

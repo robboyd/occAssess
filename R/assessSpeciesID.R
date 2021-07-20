@@ -55,11 +55,9 @@ assessSpeciesID <- function(dat,
 
   for (i in 1: length(periods)) {
 
-    dat$Period <- ifelse(dat$year %in% periods[[i]], paste0("p", i), dat$Period)
+    dat$Period <- ifelse(dat$year %in% periods[[i]], i, dat$Period)
 
   }
-
-  Ps <- paste0("p", 1:length(periods))
   
   if (any(is.na(dat$year))) {
 
@@ -76,7 +74,7 @@ assessSpeciesID <- function(dat,
 
                 dat <- dat[dat$identifier == i, ]
 
-                assign(paste0("props_", i), lapply(Ps,
+                assign(paste0("props_", i), lapply(1:length(periods),
                                                    function(x) {
 
                                                      if (type == "proportion") {
@@ -117,6 +115,7 @@ assessSpeciesID <- function(dat,
     ggplot2::geom_line() +
     ggplot2::theme_linedraw() +
     ggplot2::ylab(ylab) +
+    ggplot2::xlab("Period")
     ggplot2::labs(colour = "")
 
   return(list(data = data,

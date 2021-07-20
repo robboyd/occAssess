@@ -54,11 +54,9 @@ assessRecordNumber <- function(dat,
   
   for (i in 1: length(periods)) {
     
-    dat$Period <- ifelse(dat$year %in% periods[[i]], paste0("p", i), dat$Period)
+    dat$Period <- ifelse(dat$year %in% periods[[i]], i, dat$Period)
     
   }
-  
-  Ps <- paste0("p", 1:length(periods))
   
   if (any(is.na(dat$year))) {
     
@@ -75,7 +73,7 @@ assessRecordNumber <- function(dat,
                    
                    dat <- dat[dat$identifier == i, ]
                    
-                   assign(paste0("props_", i), lapply(Ps,
+                   assign(paste0("props_", i), lapply(1:length(periods),
                                                       function(x) {
                                                         
                                                         val <- ifelse(length(dat$species[dat$Period == x]) > 0, length(dat$species[dat$Period == x]), 0)
@@ -101,7 +99,8 @@ assessRecordNumber <- function(dat,
     ggplot2::geom_line() +
     ggplot2::theme_linedraw() +
     ggplot2::ylab("Number of records") +
-    ggplot2::labs(colour = "")
+    ggplot2::labs(colour = "",
+                  x = "Period")
 
   return(list(data = data,
               plot = p))

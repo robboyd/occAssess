@@ -73,8 +73,6 @@ assessSpatialBias <- function(dat,
     
   }
 
-  Ps <- paste0("p", 1:length(periods))
-
   dat <- dat[order(dat$year), ]
   
   if (any(!dat$year %in% unlist(periods))) {
@@ -89,7 +87,7 @@ assessSpatialBias <- function(dat,
   
   for (i in 1: length(periods)) {
     
-    dat$Period <- ifelse(dat$year %in% periods[[i]], paste0("p", i), dat$Period)
+    dat$Period <- ifelse(dat$year %in% periods[[i]], i, dat$Period)
     
   }
 
@@ -116,7 +114,7 @@ if (degrade == TRUE & any(duplicated(dat[, c("x", "y", "identifier", "Period")])
       
     }
 
-    index <- lapply(Ps,
+    index <- lapply(1:length(periods),
                     function(y) {
    
                       pDat <- dat[dat$Period == y & dat$identifier == i, ]
@@ -193,7 +191,7 @@ if (degrade == TRUE & any(duplicated(dat[, c("x", "y", "identifier", "Period")])
     ggplot2::theme_linedraw() + 
     ggplot2::ylab("Nearest neighbour index") +
     ggplot2::labs(fill = "") +
-    ggplot2::xlab("") +
+    ggplot2::xlab("Period") +
     ggplot2::guides(colour = FALSE)
 
   return(list(data = data, 
