@@ -1,8 +1,7 @@
 ---
 title: "Worked example 2: What does a near-random dataset look like?"
 output: 
-html_document:
-keep_md: yes
+html_vignette:
 vignette: >
   %\VignetteIndexEntry{occAssessUKRandom40SpeciesVaryingRecNumbers}
   %\VignetteEngine{knitr::rmarkdown}
