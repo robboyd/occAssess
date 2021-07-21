@@ -78,7 +78,7 @@ str(nRec$data)
 nRec$plot
 ```
 
-![plot of chunk unnamed-chunk-4](figure/unnamed-chunk-4-1.png)
+![plot of chunk unnamed-chunk-4](vignettes/figure/unnamed-chunk-4-1.png)
 
 This function enables researchers to quickly establish how the number of records has changed over time. 
 
@@ -107,7 +107,7 @@ str(nSpec$data)
 nSpec$plot
 ```
 
-![plot of chunk unnamed-chunk-5](figure/unnamed-chunk-5-1.png)
+![plot of chunk unnamed-chunk-5](vignettes/figure/unnamed-chunk-5-1.png)
 
 #### assessSpeciesID 
 
