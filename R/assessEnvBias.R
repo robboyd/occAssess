@@ -110,7 +110,7 @@ assessEnvBias <- function(dat,
                                    identifier = x,
                                    scores = scores,
                                    xVar = summary(pca)$importance[2,xPC] * 100,
-                                   yVar = summary(pca)$importance[2,xPC] * 100)})
+                                   yVar = summary(pca)$importance[2,yPC] * 100)})
     
     plotDat <- do.call("rbind", plotDat)
     
