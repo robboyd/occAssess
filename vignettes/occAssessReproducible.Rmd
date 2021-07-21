@@ -1,5 +1,5 @@
 ---
-title: "Worked example 3: A fully reproducible case study"
+title: "Worked example 3: A fully reproducible case study with simulated data"
 output: 
 html_vignette:
 vignette: >
@@ -51,13 +51,19 @@ All of the functions in occAssess require two common arguments: dat and periods 
 
 #### assessRecordNumber
 
-The first function I will introduce is the simplest: assessRecordNumber. This function simply plots out the number of records per year in your dataset. 
+The first function I will introduce is the simplest: assessRecordNumber. This function simply plots out the number of records per period in your dataset. Note that, for all functions, users must specify six arguments corresponding to the six mandatory fields in occAssess: species, x, y, year, spatialuncertainty and identifier. These arguments indicate which columns in dat apply to each field.
 
 
 ```{r sim4}
 
 nRec <- assessRecordNumber(dat = spDat,
-                           periods = periods)
+                           periods = periods,
+                           species = "species",
+                           x = "x",
+                           y = "y",
+                           year = "year", 
+                           spatialUncertainty = "spatialUncertainty",
+                           identifier = "identifier")
 
 
 nRec$plot
@@ -73,7 +79,13 @@ In addition to the number of records, you may wish to know how the number of spe
 ```{r sim5}
 
 nSpec <- assessSpeciesNumber(dat = spDat,
-                           periods = periods)
+                           periods = periods,
+                           species = "species",
+                           x = "x",
+                           y = "y",
+                           year = "year", 
+                           spatialUncertainty = "spatialUncertainty",
+                           identifier = "identifier")
 
 nSpec$plot
 ```
@@ -87,7 +99,13 @@ It has been speculated that apparent changes in taxonomic coverage could, in fac
 
 propID <- assessSpeciesID(dat = spDat,
                            periods = periods,
-                           type = "proportion")
+                           type = "proportion",
+                           species = "species",
+                           x = "x",
+                           y = "y",
+                           year = "year", 
+                           spatialUncertainty = "spatialUncertainty",
+                           identifier = "identifier")
 
 propID$plot + ggplot2::ylim(c(0,1)) ## it is easy to modify the outputs of the functions in occAssess to e.g. change axis ranges
 ```
@@ -104,7 +122,13 @@ A number of studies have defined taxonomic bias in a dataset as the degree of pr
 taxBias <- assessRarityBias(dat = spDat,
                             periods = periods,
                             res = 20000,
-                            prevPerPeriod = TRUE)
+                            prevPerPeriod = TRUE,
+                            species = "species",
+                            x = "x",
+                            y = "y",
+                            year = "year", 
+                            spatialUncertainty = "spatialUncertainty",
+                            identifier = "identifier")
 
 taxBias$plot + ggplot2::ylim(c(0,1))
 ```
@@ -122,7 +146,13 @@ map <- assessSpatialCov(dat = spDat,
                         periods = periods,
                         res = 0.1,
                         logCount = TRUE,
-                        countries = "UK")
+                        countries = "UK",
+                        species = "species",
+                        x = "x",
+                        y = "y",
+                        year = "year", 
+                        spatialUncertainty = "spatialUncertainty",
+                        identifier = "identifier")
 
 map$survey1
 ```
@@ -156,7 +186,13 @@ spatBias <- assessSpatialBias(dat = spDat,
                               periods = periods,
                               mask = UKWGS84mask,
                               nSamps = 10,
-                              degrade = TRUE)
+                              degrade = TRUE,
+                              species = "species",
+                              x = "x",
+                              y = "y",
+                              year = "year", 
+                              spatialUncertainty = "spatialUncertainty",
+                              identifier = "identifier")
 
 str(spatBias$data)
 
@@ -187,12 +223,20 @@ assessEnvBias conducts a principal component analysis on your environmental data
 
 ```{r sim13}
 
-assessEnvBias(dat = spDat,
-              periods = periods,
-              envDat = simEnvDat,
-              backgroundEnvDat = backgroundEnvDat,
-              xPC = 1,
-              yPC = 2)
+envBias <- assessEnvBias(dat = spDat,
+                         periods = periods,
+                         envDat = simEnvDat,
+                         backgroundEnvDat = backgroundEnvDat,
+                         xPC = 1,
+                         yPC = 2,
+                         species = "species",
+                         x = "x",
+                         y = "y",
+                         year = "year", 
+                         spatialUncertainty = "spatialUncertainty",
+                         identifier = "identifier")
+
+envBias$plot
 ```
 
 The arguments yPC and xPC indicate which principal components you would like on the y and x axes, respectively. 

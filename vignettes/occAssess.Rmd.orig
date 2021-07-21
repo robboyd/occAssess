@@ -10,8 +10,7 @@ vignette: >
 
 ```{r, include = FALSE}
 knitr::opts_chunk$set(
-  collapse = TRUE,
-  comment = "#>"
+  dev = "png", fig.height = 3, fig.width = 8, collapse = TRUE, comment = "#>", dpi = 300
 )
 ```
 
@@ -28,17 +27,17 @@ occAssess enables quick and easy screening of species occurrence data for common
 
 ## How does it work? 
 
-The package comprises a number of discrete functions, each of which is designed to assess a common form of bias. Generally speaking, users must simply pass their occurrence data to the functions, and specify time periods into which the resulting metrics will be split. Ouputs are generally provided in list format, with one element containing a ggplot2 object, and a second containing the data that underpins that plot.
+The package comprises a number of discrete functions, each of which is designed to assess a common form of bias. Generally speaking, users must pass three bits of information to the functions: 1) their occurrence data to the functions; 2) and list of time periods into which the resulting metrics will be split; and 3) the names of the columns in their data that correspond to the required fields in occAssess. Ouputs are generally provided in list format, with one element containing a ggplot2 object, and a second containing the data that underpins that plot.
 
 ## A worked example 
 
-In this document I demonstrate the utility of occAssess by applying it to data on pollinator occurrences in South America over the period 1950 to 2019. The data were extracted from GBIF and can be accessed at https://doi.org/10.15468/dl.wqz6z3. 
+In this document I demonstrate the utility of occAssess by applying it to data on flower-visiting taxa occurrences in South America over the period 1950 to 2019. The data were extracted from GBIF and can be accessed at https://doi.org/10.15468/dl.wqz6z3. 
 
 ### Inputs
 
 #### Occurrence data
 
-occAssess requires a data.frame with the following fields: species (species name), x (x coordinae of record), y (y coordinate), year, spatialUncertainty (how much uncertainty is associated with the x and y coordinates; units do not matter but must be consistent) and identifier. The identifier is used to split the data into groups; for example, it could represent taxonomic groups or specific datasets. Where you have no information for a field, its value should be set to NA. 
+occAssess requires a data.frame with the following fields: species (species name), x (x coordinae of record), y (y coordinate), year, spatialUncertainty (how much uncertainty is associated with the x and y coordinates; units do not matter but must be consistent) and identifier. The identifier is used to split the data into groups; for example, it could represent taxonomic groups or specific datasets. Where you have no information for a field, its value should be set to NA. The column names in your data need not match the fields needed for occAssess; instead, you must specify which columns corresponds to which of the required fields. This enables compatability with data standards such as Darwin core. 
 
 ```{r eval = TRUE}
 
@@ -50,7 +49,7 @@ str(spDat)
 
 #### Periods
 
-In addition to your occurrence data, you must also provide a number of periods into which your data will be split (thi can be one period covering e.g. your whole study extent). In this example I will split the data into (roughly) decades over the period 1950 to 2019. Periods are defined as follows:
+In addition to your occurrence data, you must also provide a number of periods into which your data will be split (thi can be one period covering e.g. your whole study extent). In this example I will split the data into decades over the period 1950 to 2019. Periods are defined as follows:
 
 ```{r eval = TRUE}
 
@@ -60,7 +59,7 @@ periods <- list(1950:1959, 1960:1969, 1970:1979, 1980:1989, 1990:1999, 2000:2009
 
 ### Functions
 
-All of the functions in occAssess require two common arguments: dat and periods (outlined above). I will run through each function in the following, indicating where additional arguments are required. Generally, the functions in occAssess return a list with two elements: one being a ggplot2 object, with a separate panel for each level of identifier; and a second with the data underpinning the plot.
+All of the functions in occAssess require two common arguments (in addition to the arguments that specify which column matches which field): dat and periods (outlined above). I will run through each function in the following, indicating where additional arguments are required. Generally, the functions in occAssess return a list with two elements: one being a ggplot2 object, with a separate panel or group for each level of identifier; and a second with the data underpinning the plot.
 
 #### assessRecordNumber
 
@@ -69,7 +68,13 @@ The first function I will introduce is the simplest: assessRecordNumber. This fu
 ```{r eval = TRUE, fig.width = 7}
 
 nRec <- assessRecordNumber(dat = spDat,
-                           periods = periods)
+                           periods = periods,
+                           species = "species",
+                           x = "x",
+                           y = "y",
+                           year = "year", 
+                           spatialUncertainty = "spatialUncertainty",
+                           identifier = "identifier")
 
 str(nRec$data)
 
@@ -86,7 +91,13 @@ In addition to the number of records, you may wish to know how the number of spe
 ```{r eval = TRUE, fig.width = 7}
 
 nSpec <- assessSpeciesNumber(dat = spDat,
-                           periods = periods)
+                             periods = periods,
+                             species = "species",
+                             x = "x",
+                             y = "y",
+                             year = "year", 
+                             spatialUncertainty = "spatialUncertainty",
+                             identifier = "identifier")
 
 str(nSpec$data)
 
@@ -102,7 +113,13 @@ It has been speculated that apparent changes in taxonomic coverage could, in fac
 
 propID <- assessSpeciesID(dat = spDat,
                            periods = periods,
-                           type = "proportion")
+                           type = "proportion",
+                           species = "species",
+                           x = "x",
+                           y = "y",
+                           year = "year", 
+                           spatialUncertainty = "spatialUncertainty",
+                           identifier = "identifier")
 
 str(propID$data)
 
@@ -121,7 +138,13 @@ A number of studies have defined taxonomic bias in a dataset as the degree of pr
 taxBias <- assessRarityBias(dat = spDat,
                             periods = periods,
                             res = 0.5,
-                            prevPerPeriod = FALSE)
+                            prevPerPeriod = FALSE,
+                            species = "species",
+                            x = "x",
+                            y = "y",
+                            year = "year", 
+                            spatialUncertainty = "spatialUncertainty",
+                            identifier = "identifier")
 
 str(taxBias$data)
 
@@ -133,14 +156,21 @@ taxBias$plot +ggplot2::ylim(c(0,1))
 
 The function assessSpatialCov grids your data at a specified spatial resolution then maps it in geographic space:
 
-```{r eval = TRUE, fig.width = 7}
+```{r eval = TRUE, fig.width = 7, fig.height = 7}
 
 maps <- assessSpatialCov(dat = spDat,
                          periods = periods,
                          res = 0.5,
                          logCount = TRUE,
                          countries = c("Brazil", "Argentina", "Chile", "Colombia", "Ecuador", "Bolivia", "Uruguay", 
-                         "Venezuela", "Guayana", "Paraguay", "Peru", "Suriname"))
+                         "Venezuela",  "Paraguay", "Peru", "Suriname", "Mexico", "Panama", "Costa Rica", "Honduras",
+                         "Nicaragua", "Belize", "El Salvador", "Guatemala", "Cuba", "Dominican Republic"),
+                         species = "species",
+                         x = "x",
+                         y = "y",
+                         year = "year", 
+                         spatialUncertainty = "spatialUncertainty",
+                         identifier = "identifier")
 
 maps[[1]] + ggplot2::xlim(c(-90, -30)) # Phyllostomidae
 
@@ -168,7 +198,13 @@ spatBias <- assessSpatialBias(dat = spDat,
                               periods = periods,
                               mask = mask,
                               nSamps = 10,
-                              degrade = TRUE)
+                              degrade = TRUE,
+                              species = "species",
+                              x = "x",
+                              y = "y",
+                              year = "year", 
+                              spatialUncertainty = "spatialUncertainty",
+                              identifier = "identifier")
 
 str(spatBias$data)
 
@@ -214,12 +250,20 @@ assessEnvBias conducts a principal component analysis on your environmental data
 
 ```{r eval = TRUE, fig.width = 7}
 
-assessEnvBias(dat = spDat,
-              envDat = envDat,
-              backgroundEnvDat = backgroundEnvDat,
-              xPC = 1,
-              yPC = 2,
-              periods = periods) # xPC and yPC indicate which principal components to set as the x and y axes, respectively
+envBias <- assessEnvBias(dat = spDat,
+                         species = "species",
+                         x = "x",
+                         y = "y",
+                         year = "year", 
+                         spatialUncertainty = "spatialUncertainty",
+                         identifier = "identifier",
+                         envDat = envDat,
+                         backgroundEnvDat = backgroundEnvDat,
+                         xPC = 1,
+                         yPC = 2,
+                         periods = periods) # xPC and yPC indicate which principal components to set as the x and y axes,respectively
 
+
+envBias$plot
 ```
 

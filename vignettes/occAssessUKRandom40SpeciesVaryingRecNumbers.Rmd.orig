@@ -15,7 +15,7 @@ knitr::opts_chunk$set(
   comment = "#>",
   dev = "png",
   dpi = 300,
-  fig.path = ""
+  fig.height = 3
 )
 ```
 
@@ -63,7 +63,13 @@ The first function I will introduce is the simplest: assessRecordNumber. This fu
 ```{r out3, eval = TRUE, fig.width = 7}
 
 nRec <- assessRecordNumber(dat = spDat,
-                           periods = periods)
+                           periods = periods,
+                           species = "species",
+                           x = "x",
+                           y = "y",
+                           year = "year", 
+                           spatialUncertainty = "spatialUncertainty",
+                           identifier = "identifier")
 
 str(nRec$data)
 
@@ -80,7 +86,13 @@ In addition to the number of records, you may wish to know how the number of spe
 ```{r out4, eval = TRUE, fig.width = 7}
 
 nSpec <- assessSpeciesNumber(dat = spDat,
-                           periods = periods)
+                           periods = periods,
+                           species = "species",
+                           x = "x",
+                           y = "y",
+                           year = "year", 
+                           spatialUncertainty = "spatialUncertainty",
+                           identifier = "identifier")
 
 str(nSpec$data)
 
@@ -96,7 +108,13 @@ It has been speculated that apparent changes in taxonomic coverage could, in fac
 
 propID <- assessSpeciesID(dat = spDat,
                            periods = periods,
-                           type = "proportion")
+                           type = "proportion",
+                           species = "species",
+                           x = "x",
+                           y = "y",
+                           year = "year", 
+                           spatialUncertainty = "spatialUncertainty",
+                           identifier = "identifier")
 
 str(propID$data)
 
@@ -115,7 +133,13 @@ A number of studies have defined taxonomic bias in a dataset as the degree of pr
 taxBias <- assessRarityBias(dat = spDat,
                             periods = periods,
                             res = 20000,
-                            prevPerPeriod = TRUE)
+                            prevPerPeriod = TRUE,
+                            species = "species",
+                            x = "x",
+                            y = "y",
+                            year = "year", 
+                            spatialUncertainty = "spatialUncertainty",
+                            identifier = "identifier")
 
 str(taxBias$data)
 
@@ -129,20 +153,28 @@ Note the warning message which tells us that there are low numbers of species in
 
 The function assessSpatialCov grids your data at a specified spatial resolution then maps it in geographic space. In this example, I provide a shapefile with the boundaries of the UK. If I was working on the WGS84 coordinate reference system (here I am using OSGB 36) this would not be necessary; I could instead use the countries argument and simply specify "UK". The function returns a list with n elements where n is the number of levels in the identifier field. Each element contains N maps where N is the number of time periods: 
 
-```{r out7, eval = TRUE, fig.width = 7}
+```{r out7, eval = TRUE, fig.width = 7, fig.height = 7}
 
 library(BRCmap) ## a colleague's package that is not publically available. Users will have to provide their own shapefile
 
 data(UK)
 
-shp <- UK$britain
+shp <- UK[UK$REGION == "Great Britain", ]
+
+head(shp)
 
 map <- assessSpatialCov(dat = spDat,
                         periods,
                         res = 10000,
                         logCount = TRUE,
                         countries = NULL,
-                        shp = shp)
+                        shp = shp,
+                        species = "species",
+                        x = "x",
+                        y = "y",
+                        year = "year", 
+                        spatialUncertainty = "spatialUncertainty",
+                        identifier = "identifier")
 
 map$survey1
 
@@ -171,7 +203,13 @@ spatBias <- assessSpatialBias(dat = spDat,
                               periods = periods,
                               mask = mask,
                               nSamps = 10,
-                              degrade = TRUE)
+                              degrade = TRUE,
+                              species = "species",
+                              x = "x",
+                              y = "y",
+                              year = "year", 
+                              spatialUncertainty = "spatialUncertainty",
+                              identifier = "identifier")
 
 str(spatBias$data)
 
@@ -202,13 +240,20 @@ assessEnvBias conducts a principal component analysis on your environmental data
 
 ```{r out10, eval = TRUE, fig.width = 7}
 
-assessEnvBias(dat = spDat,
-              periods = periods,
-              envDat = random40SpeciesEnvDat,
-              backgroundEnvDat = backgroundEnvDat,
-              xPC = 1,
-              yPC = 2)
+envBias <- assessEnvBias(dat = spDat,
+                         periods = periods,
+                         envDat = random40SpeciesEnvDat,
+                         backgroundEnvDat = backgroundEnvDat,
+                         xPC = 1,
+                         yPC = 2,
+                         species = "species",
+                         x = "x",
+                         y = "y",
+                         year = "year", 
+                         spatialUncertainty = "spatialUncertainty",
+                         identifier = "identifier")
 
+envBias$plot
 
 ```
 The arguments yPC and xPC indicate which principal components you would like on the y and x axes, respectively. 
