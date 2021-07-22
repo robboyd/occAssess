@@ -74,7 +74,8 @@ nRec <- assessRecordNumber(dat = spDat,
                            y = "y",
                            year = "year", 
                            spatialUncertainty = "spatialUncertainty",
-                           identifier = "identifier")
+                           identifier = "identifier",
+                           normalize = FALSE)
 
 str(nRec$data)
 
@@ -82,7 +83,7 @@ nRec$plot
 
 ```
 
-This function enables researchers to quickly establish how the number of records has changed over time. 
+This function enables researchers to quickly establish how the number of records has changed over time. Note the argument "normalize" which, if TRUE, will rescale the counts for each level of identifier to enable comparisons where they are very different.
 
 #### assessSpeciesNumber 
 
@@ -97,7 +98,8 @@ nSpec <- assessSpeciesNumber(dat = spDat,
                              y = "y",
                              year = "year", 
                              spatialUncertainty = "spatialUncertainty",
-                             identifier = "identifier")
+                             identifier = "identifier",
+                             normalize = FALSE)
 
 str(nSpec$data)
 

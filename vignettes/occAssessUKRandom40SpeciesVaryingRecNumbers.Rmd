@@ -1,7 +1,8 @@
 ---
 title: "Worked example 2: What does a near-random dataset look like?"
 output: 
-html_vignette:
+html_document:
+keep_md: yes
 vignette: >
   %\VignetteIndexEntry{occAssessUKRandom40SpeciesVaryingRecNumbers}
   %\VignetteEngine{knitr::rmarkdown}
@@ -186,8 +187,13 @@ data(UK)
 shp <- UK[UK$REGION == "Great Britain", ]
 
 head(shp)
-#>          REGION ID
-#> 2 Great Britain  1
+#> class       : SpatialPolygonsDataFrame 
+#> features    : 1 
+#> extent      : 7422.81, 655616.6, 7041.804, 1218620  (xmin, xmax, ymin, ymax)
+#> crs         : +proj=tmerc +lat_0=49 +lon_0=-2 +k=0.9996012717 +x_0=400000 +y_0=-100000 +datum=OSGB36 +units=m +no_defs +ellps=airy +towgs84=446.448,-125.157,542.060,0.1502,0.2470,0.8421,-20.4894 
+#> variables   : 2
+#> names       :        REGION, ID 
+#> value       : Great Britain,  1
 
 map <- assessSpatialCov(dat = spDat,
                         periods,
@@ -256,9 +262,9 @@ spatBias <- assessSpatialBias(dat = spDat,
 
 str(spatBias$data)
 #> 'data.frame':	10 obs. of  5 variables:
-#>  $ mean      : num  1.014 0.999 1.008 1 0.989 ...
-#>  $ upper     : num  1.02 1.01 1.02 1.02 1 ...
-#>  $ lower     : num  0.999 0.986 0.995 0.983 0.97 ...
+#>  $ mean      : num  1.011 0.996 1.008 0.995 0.991 ...
+#>  $ upper     : num  1.02 1.01 1.02 1.01 1 ...
+#>  $ lower     : num  1.002 0.989 1 0.982 0.978 ...
 #>  $ Period    : chr  "1" "2" "3" "4" ...
 #>  $ identifier: chr  "survey1" "survey1" "survey1" "survey1" ...
 

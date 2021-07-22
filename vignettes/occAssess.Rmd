@@ -79,7 +79,8 @@ nRec <- assessRecordNumber(dat = spDat,
                            y = "y",
                            year = "year", 
                            spatialUncertainty = "spatialUncertainty",
-                           identifier = "identifier")
+                           identifier = "identifier",
+                           normalize = FALSE)
 
 str(nRec$data)
 #> 'data.frame':	14 obs. of  3 variables:
@@ -92,7 +93,7 @@ nRec$plot
 
 ![plot of chunk unnamed-chunk-4](figure/unnamed-chunk-4-1.png)
 
-This function enables researchers to quickly establish how the number of records has changed over time. 
+This function enables researchers to quickly establish how the number of records has changed over time. Note the argument "normalize" which, if TRUE, will rescale the counts for each level of identifier to enable comparisons where they are very different.
 
 #### assessSpeciesNumber 
 
@@ -108,7 +109,8 @@ nSpec <- assessSpeciesNumber(dat = spDat,
                              y = "y",
                              year = "year", 
                              spatialUncertainty = "spatialUncertainty",
-                             identifier = "identifier")
+                             identifier = "identifier",
+                             normalize = FALSE)
 
 str(nSpec$data)
 #> 'data.frame':	14 obs. of  3 variables:
@@ -137,33 +139,6 @@ propID <- assessSpeciesID(dat = spDat,
                            year = "year", 
                            spatialUncertainty = "spatialUncertainty",
                            identifier = "identifier")
-#> Warning in ifelse(length(as.numeric(dat$species[dat$Period == x]) > 0), : NAs introduced by coercion
-
-#> Warning in ifelse(length(as.numeric(dat$species[dat$Period == x]) > 0), : NAs introduced by coercion
-
-#> Warning in ifelse(length(as.numeric(dat$species[dat$Period == x]) > 0), : NAs introduced by coercion
-
-#> Warning in ifelse(length(as.numeric(dat$species[dat$Period == x]) > 0), : NAs introduced by coercion
-
-#> Warning in ifelse(length(as.numeric(dat$species[dat$Period == x]) > 0), : NAs introduced by coercion
-
-#> Warning in ifelse(length(as.numeric(dat$species[dat$Period == x]) > 0), : NAs introduced by coercion
-
-#> Warning in ifelse(length(as.numeric(dat$species[dat$Period == x]) > 0), : NAs introduced by coercion
-
-#> Warning in ifelse(length(as.numeric(dat$species[dat$Period == x]) > 0), : NAs introduced by coercion
-
-#> Warning in ifelse(length(as.numeric(dat$species[dat$Period == x]) > 0), : NAs introduced by coercion
-
-#> Warning in ifelse(length(as.numeric(dat$species[dat$Period == x]) > 0), : NAs introduced by coercion
-
-#> Warning in ifelse(length(as.numeric(dat$species[dat$Period == x]) > 0), : NAs introduced by coercion
-
-#> Warning in ifelse(length(as.numeric(dat$species[dat$Period == x]) > 0), : NAs introduced by coercion
-
-#> Warning in ifelse(length(as.numeric(dat$species[dat$Period == x]) > 0), : NAs introduced by coercion
-
-#> Warning in ifelse(length(as.numeric(dat$species[dat$Period == x]) > 0), : NAs introduced by coercion
 
 str(propID$data)
 #> 'data.frame':	14 obs. of  3 variables:
@@ -288,9 +263,9 @@ spatBias <- assessSpatialBias(dat = spDat,
 
 str(spatBias$data)
 #> 'data.frame':	14 obs. of  5 variables:
-#>  $ mean      : num  0.4 0.441 0.274 0.246 0.279 ...
-#>  $ upper     : num  0.437 0.454 0.28 0.253 0.287 ...
-#>  $ lower     : num  0.362 0.429 0.267 0.238 0.268 ...
+#>  $ mean      : num  0.391 0.435 0.274 0.248 0.276 ...
+#>  $ upper     : num  0.418 0.444 0.288 0.257 0.284 ...
+#>  $ lower     : num  0.366 0.427 0.263 0.241 0.268 ...
 #>  $ Period    : chr  "1" "2" "3" "4" ...
 #>  $ identifier: chr  "Phyllostomidae" "Phyllostomidae" "Phyllostomidae" "Phyllostomidae" ...
 

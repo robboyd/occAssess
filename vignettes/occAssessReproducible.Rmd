@@ -1,11 +1,6 @@
 ---
-title: "Worked example 3: A fully reproducible case study with simulated data"
-output: 
-html_vignette:
-vignette: >
-  %\VignetteIndexEntry{occAssessReproducible}
-  %\VignetteEngine{knitr::rmarkdown}
-  %\VignetteEncoding{UTF-8}
+title: 'Worked example 3: A fully reproducible case study with simulated data'
+output: word_document
 ---
 
 
@@ -18,7 +13,7 @@ library(occAssess)
 
 ### Introduction
 
-This vignette provides a worked example for the functionality of occAssess. For a full tutorial see the main vignette at https://github.com/robboyd/occAssess/tree/main/vignettes.occAssess.Rmd.  
+This vignette provides a worked example for the functionality of occAssess. 
 
 ### Occurrence data 
 
@@ -121,14 +116,16 @@ A number of studies have defined taxonomic bias in a dataset as the degree of pr
 
 taxBias <- assessRarityBias(dat = spDat,
                             periods = periods,
-                            res = 20000,
-                            prevPerPeriod = TRUE,
+                            res = 0.5,
+                            prevPerPeriod = FALSE,
                             species = "species",
                             x = "x",
                             y = "y",
                             year = "year", 
                             spatialUncertainty = "spatialUncertainty",
                             identifier = "identifier")
+
+taxBias$data
 
 taxBias$plot + ggplot2::ylim(c(0,1))
 ```
@@ -144,7 +141,7 @@ The function assessSpatialCov grids your data at a specified spatial resolution 
 
 map <- assessSpatialCov(dat = spDat,
                         periods = periods,
-                        res = 0.1,
+                        res = 0.5,
                         logCount = TRUE,
                         countries = "UK",
                         species = "species",
