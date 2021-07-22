@@ -28,7 +28,7 @@ assessEnvBias <- function(dat,
                           envDat,
                           backgroundEnvDat = NULL,
                           xPC = 1,
-                          yPC = 2,
+                          yPC = 2, 
                           maxSpatUncertainty = NULL) {
   
   if (any(!(c(species, x, y, year, spatialUncertainty, identifier) %in% colnames(dat)))) stop("You have specified columns that don't exist in dat.")
