@@ -74,7 +74,7 @@ str(nRec$data)
 nRec$plot
 ```
 
-![plot of chunk unnamed-chunk-4](figure/unnamed-chunk-4-1.png)
+![plot of chunk unnamed-chunk-4](vignettes/figure/unnamed-chunk-4-1.png)
 
 This function enables researchers to quickly establish how the number of records has changed over time. Note the argument "normalize" which, if TRUE, will rescale the counts for each level of identifier to enable comparisons where they are very different.
 
@@ -101,7 +101,7 @@ str(nSpec$data)
 nSpec$plot
 ```
 
-![plot of chunk unnamed-chunk-5](figure/unnamed-chunk-5-1.png)
+![plot of chunk unnamed-chunk-5](vignettes/figure/unnamed-chunk-5-1.png)
 
 #### assessSpeciesID 
 
@@ -126,7 +126,7 @@ str(propID$data)
 propID$plot
 ```
 
-![plot of chunk unnamed-chunk-6](figure/unnamed-chunk-6-1.png)
+![plot of chunk unnamed-chunk-6](vignettes/figure/unnamed-chunk-6-1.png)
 
 The argument "type" can take the values proportion (proportion of records identified to species level) or count (number of records identified to species level). 
 
@@ -156,7 +156,7 @@ str(taxBias$data)
 taxBias$plot +ggplot2::ylim(c(0,1))
 ```
 
-![plot of chunk unnamed-chunk-7](figure/unnamed-chunk-7-1.png)
+![plot of chunk unnamed-chunk-7](vignettes/figure/unnamed-chunk-7-1.png)
 
 #### assessSpatialCov 
 
@@ -181,14 +181,14 @@ maps[[1]] + ggplot2::xlim(c(-90, -30)) # Phyllostomidae
 #> Warning: Removed 47859 rows containing missing values (geom_tile).
 ```
 
-![plot of chunk unnamed-chunk-8](figure/unnamed-chunk-8-1.png)
+![plot of chunk unnamed-chunk-8](vignettes/figure/unnamed-chunk-8-1.png)
 
 ```r
 maps[[2]] + ggplot2::xlim(c(-90, -30)) # Syrphidae
 #> Warning: Removed 47859 rows containing missing values (geom_tile).
 ```
 
-![plot of chunk unnamed-chunk-8](figure/unnamed-chunk-8-2.png)
+![plot of chunk unnamed-chunk-8](vignettes/figure/unnamed-chunk-8-2.png)
 
 As you can see there are three new arguments to be specified. res is the spatial resolution at which you would like to map the data (units depend on you coordinate reference system, e.g. m if easting and northing, and decimal degress in lon/ lat); logCount indicates whether or not you would like to log10 transform the counts for visual purposes; and countries defines the countries covered by your data. Countries must be specified in order to plot their boundaries.
 
@@ -238,7 +238,7 @@ str(spatBias$data)
 spatBias$plot + ggplot2::ylim(c(0,1))
 ```
 
-![plot of chunk unnamed-chunk-10](figure/unnamed-chunk-10-1.png)
+![plot of chunk unnamed-chunk-10](vignettes/figure/unnamed-chunk-10-1.png)
 
 The argument nSamps indicates how many random distributions should be drawn, and the argument degrade = TRUE indicates that any duplicated coordinates within a time period and for a given level of identifier are removed. The shaded regions on the plot indicate the 5th and 95th percentiles of the nearest neighbour index calculated over nSamps random samples. 
 
@@ -291,4 +291,4 @@ envBias <- assessEnvBias(dat = spDat,
 envBias$plot
 ```
 
-![plot of chunk unnamed-chunk-12](figure/unnamed-chunk-12-1.png)
+![plot of chunk unnamed-chunk-12](vignettes/figure/unnamed-chunk-12-1.png)
