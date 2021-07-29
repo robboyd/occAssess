@@ -116,12 +116,28 @@ assessEnvBias <- function(dat,
     
   }
   
-  p <- ggplot2::ggplot(data = plotDat, ggplot2::aes(x = plotDat[, (2 + xPC)], y = plotDat[, (2+yPC)], colour = Period, group = Period)) + 
-    ggplot2::stat_ellipse(type = "norm") +
-    ggplot2::facet_wrap(~identifier) +
-    ggplot2::labs(x = paste0("PC", xPC, " (", plotDat$xVar[1], "%)"),
-                  y = paste0("PC", yPC, " (", plotDat$yVar[1], "%)")) +
-    ggplot2::theme_linedraw()
+  if (!is.null(backgroundEnvDat)) {
+    
+    p <- ggplot2::ggplot(data = plotDat, ggplot2::aes(x = plotDat[, (2 + xPC)], y = plotDat[, (2+yPC)], 
+                                                      colour = Period, group = Period,
+                                                      fill = factor(ifelse(Period == "background", "background", "samples")))) + 
+      ggplot2::stat_ellipse(type = "norm", geom = "polygon", alpha = 0.25) +
+      ggplot2::scale_fill_manual(aesthetics = "fill", values = c("red", "white"))
+    
+  } else {
+    
+    p <- ggplot2::ggplot(data = plotDat, ggplot2::aes(x = plotDat[, (2 + xPC)], y = plotDat[, (2+yPC)], 
+                                                      colour = Period, group = Period)) + 
+      ggplot2::stat_ellipse(type = "norm") 
+    
+  }
+  
+  p <- p + ggplot2::facet_wrap(~identifier) +
+           ggplot2::labs(x = paste0("PC", xPC, " (", round(plotDat$xVar[1], 2), "%)"),
+                  y = paste0("PC", yPC, " (", round(plotDat$yVar[1], 2), "%)"),
+                  fill = "") +
+           ggplot2::theme_linedraw()
+  
   
   return(list(data = plotDat,
               plot = p))
