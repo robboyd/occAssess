@@ -130,7 +130,7 @@ assessEnvBias <- function(dat,
                                                       colour = Period, group = Period)) + 
       ggplot2::stat_ellipse(type = "norm") 
     
-  }
+  } 
   
   p <- p + ggplot2::facet_wrap(~identifier) +
            ggplot2::labs(x = paste0("PC", xPC, " (", round(plotDat$xVar[1], 2), "%)"),
