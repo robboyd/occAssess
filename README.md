@@ -27,9 +27,7 @@ occAssess requires a data.frame with the following fields: species (species name
 
 
 ```r
-
 spDat <- read.csv("C:/Users/Rob.Lenovo-PC/Documents/surpass/Data/GBIF/07.04.21/cleanedData.csv")
-
 str(spDat)
 #> 'data.frame':	82710 obs. of  6 variables:
 #>  $ species           : chr  "Artibeus lituratus" "Carollia perspicillata" "Sturnira parvidens" "Sturnira tildae" ...
@@ -46,7 +44,6 @@ In addition to your occurrence data, you must also provide a number of periods i
 
 
 ```r
-
 periods <- list(1950:1959, 1960:1969, 1970:1979, 1980:1989, 1990:1999, 2000:2009, 2010:2019)
 ```
 
@@ -60,7 +57,6 @@ The first function I will introduce is the simplest: assessRecordNumber. This fu
 
 
 ```r
-
 nRec <- assessRecordNumber(dat = spDat,
                            periods = periods,
                            species = "species",
@@ -68,20 +64,19 @@ nRec <- assessRecordNumber(dat = spDat,
                            y = "y",
                            year = "year", 
                            spatialUncertainty = "spatialUncertainty",
-                           identifier = "identifier")
-
+                           identifier = "identifier",
+                           normalize = FALSE)
 str(nRec$data)
 #> 'data.frame':	14 obs. of  3 variables:
 #>  $ val   : int  1363 24855 13971 10499 7843 7546 12183 302 613 461 ...
 #>  $ group : chr  "Phyllostomidae" "Phyllostomidae" "Phyllostomidae" "Phyllostomidae" ...
 #>  $ Period: int  1 2 3 4 5 6 7 1 2 3 ...
-
 nRec$plot
 ```
 
 ![plot of chunk unnamed-chunk-4](vignettes/figure/unnamed-chunk-4-1.png)
 
-This function enables researchers to quickly establish how the number of records has changed over time. 
+This function enables researchers to quickly establish how the number of records has changed over time. Note the argument "normalize" which, if TRUE, will rescale the counts for each level of identifier to enable comparisons where they are very different.
 
 #### assessSpeciesNumber 
 
@@ -89,7 +84,6 @@ In addition to the number of records, you may wish to know how the number of spe
 
 
 ```r
-
 nSpec <- assessSpeciesNumber(dat = spDat,
                              periods = periods,
                              species = "species",
@@ -97,14 +91,13 @@ nSpec <- assessSpeciesNumber(dat = spDat,
                              y = "y",
                              year = "year", 
                              spatialUncertainty = "spatialUncertainty",
-                             identifier = "identifier")
-
+                             identifier = "identifier",
+                             normalize = FALSE)
 str(nSpec$data)
 #> 'data.frame':	14 obs. of  3 variables:
 #>  $ val   : int  69 122 120 118 119 130 138 15 18 17 ...
 #>  $ group : chr  "Phyllostomidae" "Phyllostomidae" "Phyllostomidae" "Phyllostomidae" ...
 #>  $ Period: int  1 2 3 4 5 6 7 1 2 3 ...
-
 nSpec$plot
 ```
 
@@ -116,7 +109,6 @@ It has been speculated that apparent changes in taxonomic coverage could, in fac
 
 
 ```r
-
 propID <- assessSpeciesID(dat = spDat,
                            periods = periods,
                            type = "proportion",
@@ -126,40 +118,11 @@ propID <- assessSpeciesID(dat = spDat,
                            year = "year", 
                            spatialUncertainty = "spatialUncertainty",
                            identifier = "identifier")
-#> Warning in ifelse(length(as.numeric(dat$species[dat$Period == x]) > 0), : NAs introduced by coercion
-
-#> Warning in ifelse(length(as.numeric(dat$species[dat$Period == x]) > 0), : NAs introduced by coercion
-
-#> Warning in ifelse(length(as.numeric(dat$species[dat$Period == x]) > 0), : NAs introduced by coercion
-
-#> Warning in ifelse(length(as.numeric(dat$species[dat$Period == x]) > 0), : NAs introduced by coercion
-
-#> Warning in ifelse(length(as.numeric(dat$species[dat$Period == x]) > 0), : NAs introduced by coercion
-
-#> Warning in ifelse(length(as.numeric(dat$species[dat$Period == x]) > 0), : NAs introduced by coercion
-
-#> Warning in ifelse(length(as.numeric(dat$species[dat$Period == x]) > 0), : NAs introduced by coercion
-
-#> Warning in ifelse(length(as.numeric(dat$species[dat$Period == x]) > 0), : NAs introduced by coercion
-
-#> Warning in ifelse(length(as.numeric(dat$species[dat$Period == x]) > 0), : NAs introduced by coercion
-
-#> Warning in ifelse(length(as.numeric(dat$species[dat$Period == x]) > 0), : NAs introduced by coercion
-
-#> Warning in ifelse(length(as.numeric(dat$species[dat$Period == x]) > 0), : NAs introduced by coercion
-
-#> Warning in ifelse(length(as.numeric(dat$species[dat$Period == x]) > 0), : NAs introduced by coercion
-
-#> Warning in ifelse(length(as.numeric(dat$species[dat$Period == x]) > 0), : NAs introduced by coercion
-
-#> Warning in ifelse(length(as.numeric(dat$species[dat$Period == x]) > 0), : NAs introduced by coercion
-
 str(propID$data)
 #> 'data.frame':	14 obs. of  3 variables:
 #>  $ prop  : num  0.941 0.986 0.959 0.963 0.959 ...
 #>  $ group : chr  "Phyllostomidae" "Phyllostomidae" "Phyllostomidae" "Phyllostomidae" ...
 #>  $ Period: int  1 2 3 4 5 6 7 1 2 3 ...
-
 propID$plot
 ```
 
@@ -173,7 +136,6 @@ A number of studies have defined taxonomic bias in a dataset as the degree of pr
 
 
 ```r
-
 taxBias <- assessRarityBias(dat = spDat,
                             periods = periods,
                             res = 0.5,
@@ -186,17 +148,15 @@ taxBias <- assessRarityBias(dat = spDat,
                             identifier = "identifier")
 #> Warning in assessRarityBias(dat = spDat, periods = periods, res = 0.5, prevPerPeriod = FALSE, : Removing 4843 records
 #> because they are do not identified to species level.
-
 str(taxBias$data)
 #> 'data.frame':	14 obs. of  3 variables:
 #>  $ period: int  1 2 3 4 5 6 7 1 2 3 ...
 #>  $ id    : chr  "Phyllostomidae" "Phyllostomidae" "Phyllostomidae" "Phyllostomidae" ...
 #>  $ index : num  0.459 0.562 0.716 0.688 0.707 ...
-
 taxBias$plot +ggplot2::ylim(c(0,1))
 ```
 
-![plot of chunk unnamed-chunk-7](vignettesfigure/unnamed-chunk-7-1.png)
+![plot of chunk unnamed-chunk-7](vignettes/figure/unnamed-chunk-7-1.png)
 
 #### assessSpatialCov 
 
@@ -204,7 +164,6 @@ The function assessSpatialCov grids your data at a specified spatial resolution 
 
 
 ```r
-
 maps <- assessSpatialCov(dat = spDat,
                          periods = periods,
                          res = 0.5,
@@ -218,7 +177,6 @@ maps <- assessSpatialCov(dat = spDat,
                          year = "year", 
                          spatialUncertainty = "spatialUncertainty",
                          identifier = "identifier")
-
 maps[[1]] + ggplot2::xlim(c(-90, -30)) # Phyllostomidae
 #> Warning: Removed 47859 rows containing missing values (geom_tile).
 ```
@@ -226,7 +184,6 @@ maps[[1]] + ggplot2::xlim(c(-90, -30)) # Phyllostomidae
 ![plot of chunk unnamed-chunk-8](vignettes/figure/unnamed-chunk-8-1.png)
 
 ```r
-
 maps[[2]] + ggplot2::xlim(c(-90, -30)) # Syrphidae
 #> Warning: Removed 47859 rows containing missing values (geom_tile).
 ```
@@ -241,9 +198,7 @@ Even if your data has good spatial coverage, it may be biased; that is to say, i
 
 
 ```r
-
 mask <- raster::raster("C:/Users/Rob.Lenovo-PC/Documents/surpass/Data/occAssessData/climSA.asc")
-
 mask
 #> class      : RasterLayer 
 #> dimensions : 410, 279, 114390  (nrow, ncol, ncell)
@@ -256,7 +211,6 @@ mask
 
 
 ```r
-
 spatBias <- assessSpatialBias(dat = spDat,
                               periods = periods,
                               mask = mask,
@@ -274,15 +228,13 @@ spatBias <- assessSpatialBias(dat = spDat,
 #> Warning in FUN(X[[i]], ...): Fewer than 100 records in period 4 for Syrphidae . View this result with caution.
 #> Warning in FUN(X[[i]], ...): Fewer than 100 records in period 5 for Syrphidae . View this result with caution.
 #> Warning: `guides(<scale> = FALSE)` is deprecated. Please use `guides(<scale> = "none")` instead.
-
 str(spatBias$data)
 #> 'data.frame':	14 obs. of  5 variables:
-#>  $ mean      : num  0.4 0.441 0.274 0.246 0.279 ...
-#>  $ upper     : num  0.437 0.454 0.28 0.253 0.287 ...
-#>  $ lower     : num  0.362 0.429 0.267 0.238 0.268 ...
+#>  $ mean      : num  0.391 0.435 0.274 0.248 0.276 ...
+#>  $ upper     : num  0.418 0.444 0.288 0.257 0.284 ...
+#>  $ lower     : num  0.366 0.427 0.263 0.241 0.268 ...
 #>  $ Period    : chr  "1" "2" "3" "4" ...
 #>  $ identifier: chr  "Phyllostomidae" "Phyllostomidae" "Phyllostomidae" "Phyllostomidae" ...
-
 spatBias$plot + ggplot2::ylim(c(0,1))
 ```
 
@@ -297,14 +249,10 @@ Spatial bias in your dataset does not necessarily tell you anything about enviro
 
 ```r
 ## How to get the data using raster::getData()
-
 #clim <- raster::getData("worldclim",var="bio",res=10)
-
 clim <- raster::stack(list.files("C:/Users/Rob.Lenovo-PC/Documents/surpass/Data/bio/bio/",
                            full.names = T)) # my local version (19 raster layers)
-
 # delineate south america in the climate data 
-
 shp <- raster::shapefile("C:/Users/Rob.Lenovo-PC/Documents/surpass/Data/South America country boundaries/South America country boundaries/data/commondata/data0/southamerica_adm0.shp")
 #> Warning in OGRSpatialRef(dsn, layer, morphFromESRI = morphFromESRI, dumpSRS = dumpSRS, : Discarded ellps WGS 84 in Proj4
 #> definition: +proj=merc +a=6378137 +b=6378137 +lat_ts=0 +lon_0=0 +x_0=0 +y_0=0 +k=1 +units=m +nadgrids=@null +wktext
@@ -315,19 +263,12 @@ shp <- raster::shapefile("C:/Users/Rob.Lenovo-PC/Documents/surpass/Data/South Am
 #> Warning in showSRID(wkt2, "PROJ"): Discarded ellps WGS 84 in Proj4 definition: +proj=merc +a=6378137 +b=6378137 +lat_ts=0
 #> +lon_0=0 +x_0=0 +y_0=0 +k=1 +units=m +nadgrids=@null +wktext +no_defs +type=crs
 #> Warning in showSRID(wkt2, "PROJ"): Discarded datum World Geodetic System 1984 in Proj4 definition
-
 shp <- sp::spTransform(shp, raster::crs(clim))
-
 clim <- raster::crop(clim, raster::extent(shp))
-
 clim <- raster::mask(clim, shp)
-
 ## exract climate data at coordinates of occurrence data 
-
 envDat <- raster::extract(clim, spDat[, c("x", "y")])
-
 ## extract background environmental data 
-
 backgroundEnvDat <- raster::sampleRandom(clim, size = 10000,
                        xy = F)
 ```
@@ -335,7 +276,6 @@ assessEnvBias conducts a principal component analysis on your environmental data
 
 
 ```r
-
 envBias <- assessEnvBias(dat = spDat,
                          species = "species",
                          x = "x",
@@ -348,12 +288,7 @@ envBias <- assessEnvBias(dat = spDat,
                          xPC = 1,
                          yPC = 2,
                          periods = periods) # xPC and yPC indicate which principal components to set as the x and y axes,respectively
-
-
 envBias$plot
 ```
 
 ![plot of chunk unnamed-chunk-12](vignettes/figure/unnamed-chunk-12-1.png)
-
-
-
