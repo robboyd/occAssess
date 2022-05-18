@@ -24,6 +24,7 @@
 #'               If nPeriods then one map is returned per level of identifier showing the number of periods in which each grid cell has been sampled.
 #' @param minPeriods Numeric. Lower limit of periods with sampling for cells to show up on the map. Defaults to NULL in which case only grid cells sampled in all \code{periods} are shown. This argument
 #'                   only applies if \code{output} = "overlap".
+#' @param returnRaster Logical. Whether or not to return rasters underpinning maps. This might be useful if you want to manipulate them in some way (e.g. convert the number of periods sampled to the proportion of periods samples, etc.).                    
 #' @return By default alist with n ggplot2 objects where n is the number of levels in the identifier field of dat. Where \code{output} = density return one map per level of identifier.
 #' @seealso \code{\link{assessSpatialBias}} which gives a measure of how far your data eviates from a random distribution in space. 
 #' @importFrom rasterVis gplot
@@ -43,7 +44,8 @@ assessSpatialCov <- function(dat,
                              periods, 
                              maxSpatUncertainty = NULL,
                              output = "density",
-                             minPeriods = NULL) {
+                             minPeriods = NULL,
+                             returnRaster = FALSE) {
 
   if (any(!(c(species, x, y, year, spatialUncertainty, identifier) %in% colnames(dat)))) stop("You have specified columns that don't exist in dat.")
   
@@ -252,6 +254,20 @@ assessSpatialCov <- function(dat,
                   })
   
   names(out) <- unique(dat$identifier)
+  
+  if(returnRaster) {
+    
+    r <- raster::stack(lapply(unique(dat$identifier),
+                              function(x) {
+                                get(paste0("rasts", x))
+                              }))
+    
+    names(r) <- unique(dat$identifier)
+    
+    out <- list(plots = out,
+                rasters = r)
+    
+  }
 
 return(out)
 
