@@ -19,7 +19,8 @@ assessSpatialCov(
   periods,
   maxSpatUncertainty = NULL,
   output = "density",
-  minPeriods = NULL
+  minPeriods = NULL,
+  returnRaster = FALSE
 )
 }
 \arguments{
@@ -60,6 +61,8 @@ If nPeriods then one map is returned per level of identifier showing the number 
 
 \item{minPeriods}{Numeric. Lower limit of periods with sampling for cells to show up on the map. Defaults to NULL in which case only grid cells sampled in all \code{periods} are shown. This argument
 only applies if \code{output} = "overlap".}
+
+\item{returnRaster}{Logical. Whether or not to return rasters underpinning maps. This might be useful if you want to manipulate them in some way (e.g. convert the number of periods sampled to the proportion of periods samples, etc.).}
 }
 \value{
 By default alist with n ggplot2 objects where n is the number of levels in the identifier field of dat. Where \code{output} = density return one map per level of identifier.
