@@ -20,7 +20,8 @@ Imports:
     ggplot2,
     raster,
     spatstat.geom,
-    rasterVis
+    rasterVis,
+    reshape2
 Suggests: 
     knitr,
     rmarkdown,
