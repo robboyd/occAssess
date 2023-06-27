@@ -9,6 +9,8 @@ data("backgroundEnvDat")
 
 data("random40SpeciesEnvDat")
 
+data("callunaData")
+
 periods <- list(2001:2002, 2003:2004, 2005:2006, 2007:2008, 2009:2010)
 
 test_that("check outputs are as expected", {
@@ -114,6 +116,12 @@ test_that("check outputs are as expected", {
                               backgroundEnvDat = backgroundEnvDat,
                               xPC = 1,
                               yPC = 2)[[1]]$scores.PC1[1], -159.4986, tolerance = 1)
+  
+  expect_true( length(assessBias1D(pop = callunaData,
+                                   breaks = 50, 
+                                   R = c("sampled_units_1987.1999", "sampled_units_2010.2019"),
+                                   x = "road_length_299_neighbours",
+                                   RNames = c("Period_1", "Period_2"))) == 2)
   
 })
 
