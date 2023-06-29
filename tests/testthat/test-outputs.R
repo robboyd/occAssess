@@ -60,6 +60,7 @@ test_that("check outputs are as expected", {
                                         year = "year",
                                         spatialUncertainty = "spatialUncertainty",
                                         identifier = "identifier",
+                                        countries = "UK",
                                         res = 20000, periods = periods, output = "overlap")), 2)
   
   expect_equal( length(assessSpatialCov(dat = random40Species, 
@@ -69,6 +70,7 @@ test_that("check outputs are as expected", {
                                         year = "year",
                                         spatialUncertainty = "spatialUncertainty",
                                         identifier = "identifier",
+                                        countries = "UK",
                                         res = 20000, 
                                         periods = periods, 
                                         output = "overlap",
