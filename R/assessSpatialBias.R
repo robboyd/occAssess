@@ -130,8 +130,8 @@ if (degrade == TRUE & any(duplicated(dat[, c("x", "y", "identifier", "Period")])
                         randomSamp <- lapply(1:nSamps, 
                                              function(x) {
                                                
-                                               ran <- raster::sampleRandom(domain, 
-                                                                           size = nrow(pDat),
+                                               ran <- raster::sampleRandom(domain,
+                                                                           size = ifelse(nrow(pDat) <= raster::ncell(domain), nrow(pDat), raster::ncell(domain))
                                                                            xy = T)
                                                
                                                dist <- spatstat.geom::nndist(X = ran[,1], Y = ran[,2], k = 1) 
@@ -184,7 +184,7 @@ if (degrade == TRUE & any(duplicated(dat[, c("x", "y", "identifier", "Period")])
   
   data <- do.call("rbind", data)
   
-  p <- ggplot2::ggplot(data = data, ggplot2::aes(x = Period, y = mean, group = identifier, ymin = lower, ymax = upper, fill = identifier, colour = identifier)) +
+  p <- ggplot2::ggplot(data = data, ggplot2::aes(x = is.numeric(Period), y = mean, group = identifier, ymin = lower, ymax = upper, fill = identifier, colour = identifier)) +
     ggplot2::geom_line() +
     ggplot2::geom_point() +
     ggplot2::geom_ribbon(alpha = 0.5) +
