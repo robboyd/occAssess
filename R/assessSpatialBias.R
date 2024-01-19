@@ -131,7 +131,7 @@ if (degrade == TRUE & any(duplicated(dat[, c("x", "y", "identifier", "Period")])
                                              function(x) {
                                                
                                                ran <- raster::sampleRandom(domain,
-                                                                           size = ifelse(nrow(pDat) <= raster::ncell(domain), nrow(pDat), raster::ncell(domain))
+                                                                           size = ifelse(nrow(pDat) <= raster::ncell(domain), nrow(pDat), raster::ncell(domain)),
                                                                            xy = T)
                                                
                                                dist <- spatstat.geom::nndist(X = ran[,1], Y = ran[,2], k = 1) 
