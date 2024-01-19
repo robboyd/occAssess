@@ -23,7 +23,7 @@ In this document I demonstrate the utility of occAssess by applying it to data o
 
 #### Occurrence data
 
-occAssess requires a data.frame with the following fields: species (species name), x (x coordinae of record), y (y coordinate), year, spatialUncertainty (how much uncertainty is associated with the x and y coordinates; units do not matter but must be consistent) and identifier. The identifier is used to split the data into groups; for example, it could represent taxonomic groups or specific datasets. Where you have no information for a field, its value should be set to NA. The column names in your data need not match the fields needed for occAssess; instead, you must specify which columns corresponds to which of the required fields. This enables compatability with data standards such as Darwin core. 
+occAssess requires a data.frame with the following fields: species (species name), x (x coordinate of record), y (y coordinate), year, spatialUncertainty (how much uncertainty is associated with the x and y coordinates; units do not matter but must be consistent) and identifier. The identifier is used to split the data into groups; for example, it could represent taxonomic groups or specific datasets. Where you have no information for a field, its value should be set to NA. The column names in your data need not match the fields needed for occAssess; instead, you must specify which columns corresponds to which of the required fields. This enables compatability with data standards such as Darwin core. 
 
 
 ```r
