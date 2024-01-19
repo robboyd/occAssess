@@ -184,7 +184,7 @@ if (degrade == TRUE & any(duplicated(dat[, c("x", "y", "identifier", "Period")])
   
   data <- do.call("rbind", data)
   
-  p <- ggplot2::ggplot(data = data, ggplot2::aes(x = is.numeric(Period), y = mean, group = identifier, ymin = lower, ymax = upper, fill = identifier, colour = identifier)) +
+  p <- ggplot2::ggplot(data = data, ggplot2::aes(x = as.numeric(Period), y = mean, group = identifier, ymin = lower, ymax = upper, fill = identifier, colour = identifier)) +
     ggplot2::geom_line() +
     ggplot2::geom_point() +
     ggplot2::geom_ribbon(alpha = 0.5) +
