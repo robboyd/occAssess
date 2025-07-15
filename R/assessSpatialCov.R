@@ -272,4 +272,3 @@ assessSpatialCov <- function(dat,
 return(out)
 
 }
-

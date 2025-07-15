@@ -24,10 +24,12 @@ assessBias1D <- function(pop, R, x, weights = NULL, breaks, RNames, WNames = NUL
   
   if (!is.data.frame(pop)) stop("pop must be a data.frame")
   
-  if(length(weights) != length(WNames)) stop("length(weights) != length(WNames)")
+  if (!is.null(weights) && length(weights) != length(WNames)) {
+    stop("length(weights) != length(WNames)")
+  }
   
-  if(length(R) != length(RNames)) stop("length(R) != length(RNames)")
-
+  if (length(R) != length(RNames)) stop("length(R) != length(RNames)")
+  
   if (any(!R %in% colnames(pop))) stop("R must be in colnames(pop)")
   
   if (!x %in% colnames(pop)) stop("x must be in colnames(pop)")
@@ -38,9 +40,9 @@ assessBias1D <- function(pop, R, x, weights = NULL, breaks, RNames, WNames = NUL
     
     stats <- lapply(1:ind, function(z) {
       
-      pop$bin <- cut(pop[, x], breaks = breaks, labels = FALSE)
+      pop$bin <- cut(pop[[x]], breaks = breaks, labels = FALSE) # cut(pop[, x], breaks = breaks, labels = FALSE)
       
-      samp <- pop[pop[R[y]] == 1, ]
+      samp <- pop[pop[[R[y]]] == 1, ]
       
       if (!is.null(weights)) {
         samp$weights <- weights[[z]][[y]]
@@ -60,7 +62,7 @@ assessBias1D <- function(pop, R, x, weights = NULL, breaks, RNames, WNames = NUL
           bin = bin_val,
           var = z,
           id = RNames[y],
-          weightType = ifelse(!is.null(weights), WNames[z], NA)
+          weightType = if (!is.null(weights)) WNames[z] else NA
         )
       })
       
@@ -68,16 +70,15 @@ assessBias1D <- function(pop, R, x, weights = NULL, breaks, RNames, WNames = NUL
       reshape2::melt(weightedFreq, id = c("bin", "var", "id", "weightType"))
     })
     
-    if (!is.null(weights) | length(R) > 1) {
-      stats <- do.call("rbind", stats)
-    }
+    do.call("rbind", stats)  # Always return a data.frame here
   })
   
-  if (!is.null(weights) | length(R) > 1) {
-    dat <- do.call("rbind", dat)
-  }
+  dat <- do.call("rbind", dat)  # Always combine all sample indicators
   
-  if (is.null(weights)) dat <- dat[dat$variable != "weighted_sample", ]
+  # Remove weighted_sample if no weights were provided
+  if (is.null(weights)) {
+    dat <- dat[dat$variable != "weighted_sample", ]
+  }
   
   p <- ggplot2::ggplot(data = dat, ggplot2::aes(y = value, x = bin, colour = variable)) +
     ggplot2::geom_line() +
@@ -90,4 +91,3 @@ assessBias1D <- function(pop, R, x, weights = NULL, breaks, RNames, WNames = NUL
   
   return(list(plot = p, data = dat))
 }
-

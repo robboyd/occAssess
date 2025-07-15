@@ -20,56 +20,48 @@ assessSpatialCov(
   maxSpatUncertainty = NULL,
   output = "density",
   minPeriods = NULL,
-  returnRaster = FALSE
+  returnRaster = FALSE,
+  crs = "BNG"
 )
 }
 \arguments{
-\item{dat}{string. A data.frame containing columns for species name, x coordinates, y coordinates, spatialUncertainty, year and an identifier (used to group the data - heuristic will be calculated for each group).}
+\item{dat}{A data.frame containing species occurrence data.}
 
-\item{species}{Character string. column name in dat giving species names.}
+\item{species}{Column name in dat giving species names.}
 
-\item{x}{string. Column name in dat giving x coordinates. Any coordinate and spatial reference systems are permitted.}
+\item{x}{Column name in dat giving x coordinates.}
 
-\item{y}{string. Column name in dat giving y coordinates. Any coordinate and spatial reference systems are permitted.}
+\item{y}{Column name in dat giving y coordinates.}
 
-\item{year}{string. Column name in dat giving years.}
+\item{year}{Column name in dat giving years.}
 
-\item{spatialUncertainty}{String. Column name in dat giving uncertainty associated with x and y. Any units are permitted.}
+\item{spatialUncertainty}{Column name in dat giving spatial uncertainty (optional).}
 
-\item{identifier}{String. Column name in dat giving record "identifiers". Identifiers are used to group the data; heuristics will be calculated separately for each group.}
+\item{identifier}{Column name for grouping data.}
 
-\item{res}{Numeric. Spatial resolution at which to grid the occurrence data.}
+\item{res}{Spatial resolution for gridding.}
 
-\item{logCount}{Logical. Whether to log transform counts for visual purposes. Useful where there is large variation in counts across cells.}
+\item{logCount}{Whether to log-transform the raster values.}
 
-\item{countries}{String or vector. Country names to be passed to ggplot2::map_data. Needed to add country borders to your plot. Countries should only be used if you are working on
-the WGS84 coordinate reference system. Otherwise see shp. If the levels in the identifier field of dat are spatial units (e.g. countries), then the countries argument should be provided a list object.
-The names of each element in the list should correspond to one level of identifier, and the contents of that element should be a country name that is valid for use with ggplot2::map_data. Both countries and shp may
-be left unspecified, but in this case no country borders will be presented on the returned plots. Do not specify both countries and shp.}
+\item{countries}{ggplot2::map_data() country names or a list of them.}
 
-\item{shp}{String. If you are not working on WGS84, then you can provide a shapefile (spatialPolygons or spatialPolygonsDataFrame) with the country borders on the relevant crs for plotting. As with countries,
-if the levels in identifier denote spatial subsets of the data, then shp may be provided as a list, with the name of each element corresponding to one level of the identifier field in dat.
-Do not specify both countries and dat.}
+\item{shp}{Shapefile object (sp class), or list of them.}
 
-\item{periods}{String. A list of time periods. For example, for two periods, the first spanning 1950 to 1990, and the second 1991 to 2019: periods = list(1950:1990, 1991:2019).}
+\item{periods}{List of year sequences, e.g., list(1950:1990, 1991:2019).}
 
-\item{maxSpatUncertainty}{Numeric. Maximum permitted spatial uncertainty. All records more uncertain than this value will be dropped. Units must match the units in your data.}
+\item{maxSpatUncertainty}{Optional numeric cutoff for filtering uncertainty.}
 
-\item{output}{String. Either "density", "overlap" or "nPeriods". If density then the maps show the density of records (grid cell^-1) per period and level of identifier.
-If overlap then one map is returned per level of identifier showing which cells have been sampled in >= \code{minPeriods} periods.
-If nPeriods then one map is returned per level of identifier showing the number of periods in which each grid cell has been sampled.}
+\item{output}{"density", "overlap", or "nPeriods".}
 
-\item{minPeriods}{Numeric. Lower limit of periods with sampling for cells to show up on the map. Defaults to NULL in which case only grid cells sampled in all \code{periods} are shown. This argument
-only applies if \code{output} = "overlap".}
+\item{minPeriods}{Minimum number of periods required per cell (for "overlap").}
 
-\item{returnRaster}{Logical. Whether or not to return rasters underpinning maps. This might be useful if you want to manipulate them in some way (e.g. convert the number of periods sampled to the proportion of periods samples, etc.).}
+\item{returnRaster}{Whether to return underlying rasters.}
+
+\item{crs}{Either "BNG" or "WGS84", specifying the CRS of the x/y input.}
 }
 \value{
-By default alist with n ggplot2 objects where n is the number of levels in the identifier field of dat. Where \code{output} = density return one map per level of identifier.
+A list of ggplot2 maps and optionally rasters.
 }
 \description{
-This function grids and then maps species occurrence data.
-}
-\seealso{
-\code{\link{assessSpatialBias}} which gives a measure of how far your data eviates from a random distribution in space.
+Grids and maps species occurrence data using specified CRS.
 }

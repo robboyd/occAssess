@@ -39,7 +39,7 @@ assessSpatialBias <- function(dat,
                               nSamps = 50, 
                               degrade = TRUE, 
                               maxSpatUncertainty = NULL) {
-  
+
   if (any(!(c(species, x, y, year, spatialUncertainty, identifier) %in% colnames(dat)))) stop("You have specified columns that don't exist in dat.")
   
   dat <- createData(data = dat,
