@@ -28,6 +28,7 @@
 #' @return By default alist with n ggplot2 objects where n is the number of levels in the identifier field of dat. Where \code{output} = density return one map per level of identifier.
 #' @seealso \code{\link{assessSpatialBias}} which gives a measure of how far your data eviates from a random distribution in space. 
 #' @importFrom rasterVis gplot
+#' @importFrom ggplot2 map_data
 #' @export
 
 assessSpatialCov <- function(dat,

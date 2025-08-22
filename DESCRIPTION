@@ -23,12 +23,12 @@ Imports:
     spatstat.geom,
     rasterVis,
     reshape2,
-    dplyr
+    dplyr,
+    maps
 Suggests: 
     knitr,
     rmarkdown,
-    testthat,
-    maps
+    testthat
 Depends:
     R(>= 4.0)
 VignetteBuilder: knitr
