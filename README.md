@@ -9,7 +9,12 @@ The R package continues to be named `occAssess`.
 ![example workflow](https://github.com/robboyd/occAssess/actions/workflows/check-standard.yml/badge.svg)
 
 ```r
-if (!"occAssess" %in% installed.packages()) devtools::install_github("https://github.com/robboyd/occAssess")
+install.packages("remotes") # needed only if remotes is not already installed
+remotes::install_github(
+  "sacrevert/occAssess2",
+  dependencies = TRUE,
+  build_vignettes = TRUE
+)
 library(occAssess)
 ```
 
