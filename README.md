@@ -1,3 +1,12 @@
+######################
+## MIGRATION NOTICE ##
+######################
+*Development has moved*
+Active development of `occAssess` has moved to [sacrevert/occAssess2](https://github.com/sacrevert/occAssess2).
+The original repository is retained for historical reference, including previous releases and issues. New bug reports, contributions and development activity should be directed to the maintained repository.
+The R package continues to be named `occAssess`.
+#######################
+
 ![example workflow](https://github.com/robboyd/occAssess/actions/workflows/check-standard.yml/badge.svg)
 
 ```r
